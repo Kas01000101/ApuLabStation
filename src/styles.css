@@ -1,0 +1,173 @@
+:root {
+  --bg-dark-navy: #0B0E26;
+  --bg-deep-blue: #141938;
+  --panel-purple: #2D2654;
+  --panel-purple-light: #3B326B;
+  --panel-border: #4D4288;
+  --accent-teal: #00F2FE;
+  --accent-teal-glow: rgba(0, 242, 254, 0.4);
+  --btn-yellow: #FFD166;
+  --btn-yellow-hover: #FFE085;
+  --btn-yellow-shadow: #D49B00;
+  --accent-coral: #FF6B6B;
+  --accent-coral-hover: #FF8585;
+  --text-light: #F8F9FA;
+  --text-muted: #B8C2CC;
+  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-dark-navy);
+  font-family: var(--font-main);
+  color: var(--text-light);
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 50%, #1A224D 0%, #0B0E26 100%);
+}
+
+#game-container {
+  width: 1280px;
+  height: 720px;
+  max-width: 100vw;
+  max-height: 100vh;
+  position: relative;
+  box-shadow: 0 0 50px rgba(0, 242, 254, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0B0E26;
+}
+
+/* Custom DOM Overlays for accessible child-friendly dialogues / inputs when needed */
+.apulab-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(11, 14, 38, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.apulab-card {
+  background: var(--panel-purple);
+  border: 3px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 32px;
+  width: 90%;
+  max-width: 640px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-teal-glow);
+  text-align: center;
+}
+
+.apulab-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent-teal);
+  text-shadow: 0 0 12px var(--accent-teal-glow);
+  margin-bottom: 12px;
+}
+
+.apulab-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.apulab-input {
+  width: 100%;
+  max-width: 320px;
+  padding: 14px 20px;
+  font-size: 1.4rem;
+  font-family: var(--font-heading);
+  text-align: center;
+  letter-spacing: 2px;
+  background: #141938;
+  border: 2px solid var(--accent-teal);
+  border-radius: 12px;
+  color: #FFFFFF;
+  outline: none;
+  margin-bottom: 20px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+
+.apulab-input:focus {
+  box-shadow: 0 0 15px var(--accent-teal-glow), inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.apulab-btn-primary {
+  background: linear-gradient(180deg, var(--btn-yellow) 0%, #FFB703 100%);
+  color: #1A1A1A;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.3rem;
+  padding: 14px 36px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 var(--btn-yellow-shadow), 0 10px 20px rgba(0,0,0,0.3);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  display: inline-block;
+  margin: 10px;
+}
+
+.apulab-btn-primary:hover {
+  background: linear-gradient(180deg, var(--btn-yellow-hover) 0%, #FFC107 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 var(--btn-yellow-shadow), 0 12px 24px rgba(0,0,0,0.4);
+}
+
+.apulab-btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--btn-yellow-shadow), 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.apulab-btn-secondary {
+  background: linear-gradient(180deg, var(--accent-coral) 0%, #E63946 100%);
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #B71C1C, 0 8px 16px rgba(0,0,0,0.3);
+  transition: all 0.1s ease;
+  display: inline-block;
+  margin: 8px;
+}
+
+.apulab-btn-secondary:hover {
+  background: linear-gradient(180deg, var(--accent-coral-hover) 0%, #F72585 100%);
+  transform: translateY(-2px);
+}
