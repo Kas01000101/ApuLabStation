@@ -28,7 +28,7 @@ body, html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--bg-dark-navy);
+  background-color: #FFFFFF;
   font-family: var(--font-main);
   color: var(--text-light);
 }
@@ -39,7 +39,7 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at 50% 50%, #1A224D 0%, #0B0E26 100%);
+  background: #FFFFFF;
 }
 
 #game-container {
@@ -48,10 +48,10 @@ body, html {
   max-width: 100vw;
   max-height: 100vh;
   position: relative;
-  box-shadow: 0 0 50px rgba(0, 242, 254, 0.15);
-  border-radius: 12px;
+  box-shadow: none;
+  border-radius: 0;
   overflow: hidden;
-  background: #0B0E26;
+  background: #FFFFFF;
 }
 
 /* Custom DOM Overlays for accessible child-friendly dialogues / inputs when needed */
