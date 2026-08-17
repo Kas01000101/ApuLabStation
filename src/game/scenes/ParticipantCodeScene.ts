@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { AwsClient } from '../../systems/AwsClient';

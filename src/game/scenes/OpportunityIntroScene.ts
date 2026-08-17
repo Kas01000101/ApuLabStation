@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { INTRO_DIALOGUE_STEPS, IntroDialogueStep } from '../../data/dialogue/intro';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';

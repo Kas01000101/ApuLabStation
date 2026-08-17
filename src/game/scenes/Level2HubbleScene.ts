@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { HUBBLE_CHALLENGES } from '../../data/hubbleChallenges';
 import { GraphChallengeEngine } from '../../engines/GraphChallengeEngine';
 import { TelemetryService } from '../../systems/TelemetryService';

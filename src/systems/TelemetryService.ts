@@ -38,7 +38,7 @@ export class TelemetryService {
       build_version: gameState.buildVersion,
       schema_version: gameState.schemaVersion,
       scene_id: opts.sceneId,
-      challenge_id: opts.challengeId,
+      challenge_id: opts.challengeId || gameState.currentChallenge || null,
       event_type: opts.eventType,
       attempt_number: opts.attemptNumber,
       payload: opts.payload || {},

@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { POSTTEST_QUESTIONS } from '../../data/posttestQuestions';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';

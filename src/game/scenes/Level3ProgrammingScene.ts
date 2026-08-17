@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { PROGRAMMING_CHALLENGES, LANDING_PHASES } from '../../data/programmingChallenges';
 import { ProgramGridEngine, Orientation } from '../../engines/ProgramGridEngine';
 import { GridCommand } from '../../types/challenges';

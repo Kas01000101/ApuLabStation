@@ -31,7 +31,7 @@ export interface TelemetryEvent {
   build_version: string;
   schema_version: string;
   scene_id: string;
-  challenge_id?: string;
+  challenge_id: string | null;
   event_type: EventType | string;
   attempt_number?: number;
   payload?: Record<string, unknown>;

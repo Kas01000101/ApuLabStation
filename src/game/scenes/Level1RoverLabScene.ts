@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { BATTERY_OPTIONS, REASON_OPTIONS, SENSOR_OPTIONS, CALIBRATION_STATIONS } from '../../data/roverChallenges';
 import { RoverLabEngine } from '../../engines/RoverLabEngine';
 import { TelemetryService } from '../../systems/TelemetryService';
