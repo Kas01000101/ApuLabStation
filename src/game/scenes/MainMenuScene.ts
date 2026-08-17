@@ -85,7 +85,7 @@ export class MainMenuScene extends Phaser.Scene {
 
   private createMenuButtons(): void {
     const { width } = this.scale;
-    const buttonX = width - 265;
+    const buttonX = width / 2;
     const groupCenterY = 430;
     const buttonWidth = uiTokens.button.width;
     const buttonHeight = uiTokens.button.height;
