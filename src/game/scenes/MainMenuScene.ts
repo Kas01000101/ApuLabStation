@@ -1,13 +1,9 @@
 import * as Phaser from 'phaser';
 import mainMenuLayoutRaw from './MainMenuLayout.scene?raw';
 import { GameState } from '../../systems/GameState';
-import {
-  clearApuLabDom,
-  createDisabledButton,
-  createPrimaryButton,
-  createSecondaryButton,
-  getGameContainer
-} from '../../ui/domComponents';
+import { MenuButton } from '../components/MenuButton';
+import { DialoguePanel } from '../components/DialoguePanel';
+import { clearApuLabDom } from '../../ui/domComponents';
 
 interface EditorImageObject {
   type: 'Image';
@@ -31,7 +27,7 @@ interface EditorSceneLayout {
 }
 
 export class MainMenuScene extends Phaser.Scene {
-  private creditsOverlay?: HTMLDivElement;
+  private creditsPanel?: DialoguePanel;
 
   constructor() {
     super({ key: 'MainMenuScene' });
@@ -64,8 +60,7 @@ export class MainMenuScene extends Phaser.Scene {
       color: '#F8F9FA'
     }).setOrigin(0.5);
 
-    this.add.image(width / 2 - 280, 155, 'rover_avatar').setScale(0.8);
-    this.createUIOverlay();
+    this.createMenuButtons();
   }
 
   private createEditorLayout(): void {
@@ -87,70 +82,72 @@ export class MainMenuScene extends Phaser.Scene {
     });
   }
 
-  private createUIOverlay(): void {
-    const container = getGameContainer();
-    if (!container) return;
+  private createMenuButtons(): void {
+    const { width } = this.scale;
+    const buttonX = width - 265;
+    const firstButtonY = 328;
+    const gap = 76;
+    const buttons: Array<{ label: string; variant: 'primary' | 'secondary'; onClick: () => void }> = [
+      {
+        label: 'INICIAR MISIÓN',
+        variant: 'primary',
+        onClick: () => {
+          clearApuLabDom();
+          this.scene.start('ParticipantCodeScene');
+        }
+      }
+    ];
 
-    document.getElementById('main-menu-dom')?.remove();
+    if (GameState.hasRecoverableSession()) {
+      buttons.push({
+        label: 'CONTINUAR',
+        variant: 'secondary',
+        onClick: () => {
+          const gameState = GameState.getInstance();
+          gameState.restoreSessionState();
+          clearApuLabDom();
+          this.scene.start(gameState.currentScene || 'OpportunityIntroScene');
+        }
+      });
+    }
 
-    const domDiv = document.createElement('div');
-    domDiv.id = 'main-menu-dom';
-    domDiv.dataset.apulabUi = 'true';
-    domDiv.className = 'apulab-action-stack';
-    domDiv.style.position = 'absolute';
-    domDiv.style.top = '300px';
-    domDiv.style.left = '50%';
-    domDiv.style.transform = 'translateX(-50%)';
-    domDiv.style.zIndex = '50';
+    buttons.push(
+      {
+        label: 'AJUSTES',
+        variant: 'secondary',
+        onClick: () => {
+          window.alert('Control de audio y volumen estará disponible en la versión v0.2.');
+        }
+      },
+      {
+        label: 'CRÉDITOS',
+        variant: 'secondary',
+        onClick: () => this.showCreditsModal()
+      }
+    );
 
-    const startBtn = createPrimaryButton('INICIAR MISIÓN', () => {
-      clearApuLabDom();
-      this.scene.start('ParticipantCodeScene');
+    buttons.forEach((button, index) => {
+      new MenuButton(this, {
+        x: buttonX,
+        y: firstButtonY + index * gap,
+        width: button.variant === 'primary' ? 330 : 285,
+        height: 60,
+        label: button.label,
+        variant: button.variant,
+        onClick: button.onClick
+      }).setDepth(50);
     });
-    startBtn.style.fontSize = '1.6rem';
-    startBtn.style.padding = '16px 50px';
-
-    const continueBtn = GameState.hasRecoverableSession()
-      ? createSecondaryButton('CONTINUAR', () => {
-        const gameState = GameState.getInstance();
-        gameState.restoreSessionState();
-        clearApuLabDom();
-        this.scene.start(gameState.currentScene || 'OpportunityIntroScene');
-      })
-      : createDisabledButton('CONTINUAR');
-
-    const settingsBtn = createSecondaryButton('AJUSTES', () => {
-      window.alert('Control de audio y volumen estará disponible en la versión v0.2.');
-    });
-
-    const creditsBtn = createSecondaryButton('CRÉDITOS', () => this.showCreditsModal());
-
-    domDiv.append(startBtn, continueBtn, settingsBtn, creditsBtn);
-    container.appendChild(domDiv);
   }
 
   private showCreditsModal(): void {
-    const container = getGameContainer();
-    if (!container) return;
-
-    this.creditsOverlay = document.createElement('div');
-    this.creditsOverlay.className = 'apulab-overlay';
-    this.creditsOverlay.dataset.apulabUi = 'true';
-    this.creditsOverlay.innerHTML = `
-      <div class="apulab-card">
-        <div class="apulab-title">APULAB STATION</div>
-        <div class="apulab-subtitle">Juego educativo STEM - Piloto Web v0.1</div>
-        <p style="font-size: 1.1rem; line-height: 1.6; color: #E2E8F0; margin-bottom: 24px;">
-          Desarrollado para investigación y aprendizaje de ciencias y tecnología.
-        </p>
-        <button id="close-credits-btn" class="apulab-btn-primary">CERRAR</button>
-      </div>
-    `;
-
-    container.appendChild(this.creditsOverlay);
-
-    document.getElementById('close-credits-btn')?.addEventListener('click', () => {
-      this.creditsOverlay?.remove();
+    this.creditsPanel?.destroy();
+    this.creditsPanel = new DialoguePanel(this, {
+      title: 'APULAB STATION',
+      body: 'Juego educativo STEM - Piloto Web v0.1\nDesarrollado para investigación y aprendizaje de ciencias y tecnología.',
+      buttonLabel: 'CERRAR',
+      onClose: () => {
+        this.creditsPanel = undefined;
+      }
     });
   }
 }
