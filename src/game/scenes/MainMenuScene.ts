@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
+import mainMenuLayoutRaw from './MainMenuLayout.scene?raw';
 import { GameState } from '../../systems/GameState';
-import { PlaceholderArt } from '../../ui/PlaceholderArt';
 import {
   clearApuLabDom,
   createDisabledButton,
@@ -8,6 +8,27 @@ import {
   createSecondaryButton,
   getGameContainer
 } from '../../ui/domComponents';
+
+interface EditorImageObject {
+  type: 'Image';
+  texture?: {
+    key?: string;
+  };
+  x?: number;
+  y?: number;
+  scaleX?: number;
+  scaleY?: number;
+  angle?: number;
+  rotation?: number;
+  originX?: number;
+  originY?: number;
+  depth?: number;
+  visible?: boolean;
+}
+
+interface EditorSceneLayout {
+  displayList?: EditorImageObject[];
+}
 
 export class MainMenuScene extends Phaser.Scene {
   private creditsOverlay?: HTMLDivElement;
@@ -20,7 +41,7 @@ export class MainMenuScene extends Phaser.Scene {
     clearApuLabDom();
     const { width } = this.scale;
 
-    PlaceholderArt.drawSpaceLabBackground(this);
+    this.createEditorLayout();
 
     const panel = this.add.graphics();
     panel.fillStyle(0x2D2654, 0.85);
@@ -45,6 +66,25 @@ export class MainMenuScene extends Phaser.Scene {
 
     this.add.image(width / 2 - 280, 155, 'rover_avatar').setScale(0.8);
     this.createUIOverlay();
+  }
+
+  private createEditorLayout(): void {
+    const layout = JSON.parse(mainMenuLayoutRaw) as EditorSceneLayout;
+
+    layout.displayList?.forEach((object) => {
+      if (object.type !== 'Image' || !object.texture?.key) return;
+
+      const image = this.add.image(object.x ?? 0, object.y ?? 0, object.texture.key);
+      image.setScale(object.scaleX ?? 1, object.scaleY ?? object.scaleX ?? 1);
+
+      if (typeof object.angle === 'number') image.setAngle(object.angle);
+      if (typeof object.rotation === 'number') image.setRotation(object.rotation);
+      if (typeof object.depth === 'number') image.setDepth(object.depth);
+      if (typeof object.visible === 'boolean') image.setVisible(object.visible);
+      if (typeof object.originX === 'number' || typeof object.originY === 'number') {
+        image.setOrigin(object.originX ?? 0.5, object.originY ?? 0.5);
+      }
+    });
   }
 
   private createUIOverlay(): void {

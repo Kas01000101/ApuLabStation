@@ -13,6 +13,8 @@ export class BootScene extends Phaser.Scene {
       fontSize: '24px',
       color: '#00F2FE'
     }).setOrigin(0.5);
+
+    this.load.pack('menu', 'assets/boot/menu/menu-pack.json');
   }
 
   create() {
