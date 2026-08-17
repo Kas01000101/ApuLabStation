@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import { UI_TOKENS } from '../../ui/tokens';
-import { MenuButton } from './MenuButton';
+import { ApuMenuButton } from './ApuMenuButton';
 
 export interface DialoguePanelOptions {
   title: string;
@@ -40,12 +40,13 @@ export class DialoguePanel extends Phaser.GameObjects.Container {
       wordWrap: { width: 500 }
     }).setOrigin(0.5);
 
-    const closeButton = new MenuButton(scene, {
+    const closeButton = new ApuMenuButton(scene, {
       x: 0,
       y: 96,
       width: 220,
       height: 58,
       label: options.buttonLabel,
+      icon: 'close',
       variant: 'primary',
       onClick: () => {
         options.onClose();

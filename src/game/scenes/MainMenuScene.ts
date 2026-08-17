@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 import mainMenuLayoutRaw from './MainMenuLayout.scene?raw';
 import { GameState } from '../../systems/GameState';
-import { MenuButton } from '../components/MenuButton';
+import { ApuMenuButton, type ApuMenuButtonIcon, type ApuMenuButtonVariant } from '../components/ApuMenuButton';
 import { DialoguePanel } from '../components/DialoguePanel';
 import { clearApuLabDom } from '../../ui/domComponents';
 
@@ -85,11 +85,19 @@ export class MainMenuScene extends Phaser.Scene {
   private createMenuButtons(): void {
     const { width } = this.scale;
     const buttonX = width - 265;
-    const firstButtonY = 328;
-    const gap = 76;
-    const buttons: Array<{ label: string; variant: 'primary' | 'secondary'; onClick: () => void }> = [
+    const groupCenterY = 430;
+    const buttonWidth = 350;
+    const buttonHeight = 72;
+    const gap = 16;
+    const buttons: Array<{
+      label: string;
+      icon: ApuMenuButtonIcon;
+      variant: ApuMenuButtonVariant;
+      onClick: () => void;
+    }> = [
       {
         label: 'INICIAR MISIÓN',
+        icon: 'rocket',
         variant: 'primary',
         onClick: () => {
           clearApuLabDom();
@@ -101,6 +109,7 @@ export class MainMenuScene extends Phaser.Scene {
     if (GameState.hasRecoverableSession()) {
       buttons.push({
         label: 'CONTINUAR',
+        icon: 'resume',
         variant: 'secondary',
         onClick: () => {
           const gameState = GameState.getInstance();
@@ -114,25 +123,31 @@ export class MainMenuScene extends Phaser.Scene {
     buttons.push(
       {
         label: 'AJUSTES',
-        variant: 'secondary',
+        icon: 'settings',
+        variant: 'utility',
         onClick: () => {
           window.alert('Control de audio y volumen estará disponible en la versión v0.2.');
         }
       },
       {
         label: 'CRÉDITOS',
-        variant: 'secondary',
+        icon: 'credits',
+        variant: 'utility',
         onClick: () => this.showCreditsModal()
       }
     );
 
+    const totalHeight = buttons.length * buttonHeight + (buttons.length - 1) * gap;
+    const firstButtonY = groupCenterY - totalHeight / 2 + buttonHeight / 2;
+
     buttons.forEach((button, index) => {
-      new MenuButton(this, {
+      new ApuMenuButton(this, {
         x: buttonX,
-        y: firstButtonY + index * gap,
-        width: button.variant === 'primary' ? 330 : 285,
-        height: 60,
+        y: firstButtonY + index * (buttonHeight + gap),
+        width: buttonWidth,
+        height: buttonHeight,
         label: button.label,
+        icon: button.icon,
         variant: button.variant,
         onClick: button.onClick
       }).setDepth(50);
