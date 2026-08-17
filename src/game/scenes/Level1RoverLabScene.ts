@@ -6,7 +6,7 @@ import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
 import { clearApuLabDom } from '../../ui/domComponents';
 
-export class Level2RoverLabScene extends Phaser.Scene {
+export class Level1RoverLabScene extends Phaser.Scene {
   private sublevelStage: '2A' | '2B' | '2C' = '2A';
   private engine!: RoverLabEngine;
 
@@ -27,7 +27,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
   private stationAdjustSequences: Record<string, number[]> = {};
 
   constructor() {
-    super({ key: 'Level2RoverLabScene' });
+    super({ key: 'Level1RoverLabScene' });
   }
 
   create() {
@@ -43,11 +43,11 @@ export class Level2RoverLabScene extends Phaser.Scene {
   private renderStage2A(): void {
     const { width, height } = this.scale;
     this.children.removeAll();
-    GameState.getInstance().updateProgress('Level2RoverLabScene', 1, '1A_ENERGY');
+    GameState.getInstance().updateProgress('Level1RoverLabScene', 1, '1A_ENERGY');
     PlaceholderArt.drawSpaceLabBackground(this);
 
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level2RoverLabScene',
+      sceneId: 'Level1RoverLabScene',
       challengeId: '1A_ENERGY',
       eventType: 'challenge_started'
     });
@@ -138,7 +138,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
         const res = RoverLabEngine.testBatterySelection(this.selectedBatteryId, this.selectedReasonId, this.attempt2A);
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1A_ENERGY',
           eventType: 'solution_submitted',
           attemptNumber: this.attempt2A,
@@ -156,14 +156,14 @@ export class Level2RoverLabScene extends Phaser.Scene {
         if (fb) fb.innerText = res.feedback;
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1A_ENERGY',
           eventType: 'feedback_shown',
           payload: { feedback: res.feedback, result: res.success ? 'success' : 'failed' }
         });
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1A_ENERGY',
           eventType: 'attempt_finished',
           attemptNumber: this.attempt2A,
@@ -174,7 +174,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
 
         if (res.success) {
           TelemetryService.getInstance().recordEvent({
-            sceneId: 'Level2RoverLabScene',
+            sceneId: 'Level1RoverLabScene',
             challengeId: '1A_ENERGY',
             eventType: 'challenge_completed',
             attemptNumber: this.attempt2A
@@ -203,11 +203,11 @@ export class Level2RoverLabScene extends Phaser.Scene {
   private renderStage2B(): void {
     const { width, height } = this.scale;
     this.children.removeAll();
-    GameState.getInstance().updateProgress('Level2RoverLabScene', 1, '1B_SENSORS');
+    GameState.getInstance().updateProgress('Level1RoverLabScene', 1, '1B_SENSORS');
     PlaceholderArt.drawSpaceLabBackground(this);
 
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level2RoverLabScene',
+      sceneId: 'Level1RoverLabScene',
       challengeId: '1B_SENSORS',
       eventType: 'challenge_started'
     });
@@ -297,7 +297,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
         const res = RoverLabEngine.testSensorSelection(this.selectedSensorIds);
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1B_SENSORS',
           eventType: 'solution_submitted',
           attemptNumber: this.attempt2B,
@@ -315,14 +315,14 @@ export class Level2RoverLabScene extends Phaser.Scene {
         if (fb) fb.innerText = res.feedback;
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1B_SENSORS',
           eventType: 'feedback_shown',
           payload: { feedback: res.feedback, result: res.success ? 'success' : 'failed' }
         });
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1B_SENSORS',
           eventType: 'attempt_finished',
           attemptNumber: this.attempt2B,
@@ -333,7 +333,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
 
         if (res.success) {
           TelemetryService.getInstance().recordEvent({
-            sceneId: 'Level2RoverLabScene',
+            sceneId: 'Level1RoverLabScene',
             challengeId: '1B_SENSORS',
             eventType: 'challenge_completed',
             attemptNumber: this.attempt2B
@@ -362,11 +362,11 @@ export class Level2RoverLabScene extends Phaser.Scene {
   private renderStage2C(): void {
     const { width, height } = this.scale;
     this.children.removeAll();
-    GameState.getInstance().updateProgress('Level2RoverLabScene', 1, '1C_CALIBRATION');
+    GameState.getInstance().updateProgress('Level1RoverLabScene', 1, '1C_CALIBRATION');
     PlaceholderArt.drawSpaceLabBackground(this);
 
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level2RoverLabScene',
+      sceneId: 'Level1RoverLabScene',
       challengeId: '1C_CALIBRATION',
       eventType: 'challenge_started'
     });
@@ -454,7 +454,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
         const attempt = this.engine.calibrationAttempts[st.id];
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1C_CALIBRATION',
           eventType: 'solution_submitted',
           attemptNumber: attempt,
@@ -473,14 +473,14 @@ export class Level2RoverLabScene extends Phaser.Scene {
         if (fb) fb.innerText = res.feedback;
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1C_CALIBRATION',
           eventType: 'feedback_shown',
           payload: { feedback: res.feedback, result: res.success ? 'success' : 'failed' }
         });
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level2RoverLabScene',
+          sceneId: 'Level1RoverLabScene',
           challengeId: '1C_CALIBRATION',
           eventType: 'attempt_finished',
           attemptNumber: attempt,
@@ -498,7 +498,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
           } else {
             // All calibrated
             TelemetryService.getInstance().recordEvent({
-              sceneId: 'Level2RoverLabScene',
+              sceneId: 'Level1RoverLabScene',
               challengeId: '1C_CALIBRATION',
               eventType: 'challenge_completed'
             });
@@ -514,7 +514,7 @@ export class Level2RoverLabScene extends Phaser.Scene {
 
             setTimeout(() => {
               overlay.remove();
-              this.scene.start('Level1HubbleScene');
+              this.scene.start('Level2HubbleScene');
             }, 1800);
           }
         }

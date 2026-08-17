@@ -4,6 +4,11 @@ import { SessionData, SessionMode } from '../types/telemetry';
 const STORAGE_KEY = 'apulab_session_state';
 const BUILD_VERSION = '0.1.0-web-pilot';
 const SCHEMA_VERSION = '2026-08-sprint0';
+const SCENE_KEY_COMPATIBILITY: Record<string, string> = {
+  Level2RoverLabScene: 'Level1RoverLabScene',
+  Level1HubbleScene: 'Level2HubbleScene',
+  Level3ProgramMissionScene: 'Level3ProgrammingScene'
+};
 
 export interface ChallengeResult {
   challengeId: string;
@@ -151,7 +156,7 @@ export class GameState {
       this.sessionId = state.session_id;
       this.participantCode = state.participant_code ?? null;
       this.sessionMode = state.session_mode ?? (this.participantCode ? 'study' : 'demo');
-      this.currentScene = state.current_scene || 'OpportunityIntroScene';
+      this.currentScene = this.normalizeSceneKey(state.current_scene || 'OpportunityIntroScene');
       this.currentLevel = state.current_level ?? 0;
       this.currentChallenge = state.current_challenge || '';
       this.completedChallenges = state.completed_challenges || [];
@@ -225,6 +230,10 @@ export class GameState {
 
   private normalizeParticipantCode(code: string): string {
     return code.trim().toUpperCase();
+  }
+
+  private normalizeSceneKey(sceneKey: string): string {
+    return SCENE_KEY_COMPATIBILITY[sceneKey] || sceneKey;
   }
 
   private generateUUID(): string {

@@ -101,6 +101,6 @@ export class PretestScene extends Phaser.Scene {
     const existing = document.getElementById('pretest-dom');
     if (existing) existing.remove();
 
-    this.scene.start('Level1HubbleScene');
+    this.scene.start('Level2HubbleScene');
   }
 }

@@ -7,7 +7,7 @@ import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
 import { clearApuLabDom } from '../../ui/domComponents';
 
-export class Level3ProgramMissionScene extends Phaser.Scene {
+export class Level3ProgrammingScene extends Phaser.Scene {
   private stageIndex: number = 0; // 0 = 3A, 1 = 3B, 2 = 3C
   private currentCommands: GridCommand[] = [];
   private isSimulating: boolean = false;
@@ -20,7 +20,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
   private landingAttempts: number = 0;
 
   constructor() {
-    super({ key: 'Level3ProgramMissionScene' });
+    super({ key: 'Level3ProgrammingScene' });
   }
 
   create() {
@@ -51,9 +51,9 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
     PlaceholderArt.drawSpaceLabBackground(this);
 
     const config = PROGRAMMING_CHALLENGES[index];
-    GameState.getInstance().updateProgress('Level3ProgramMissionScene', 3, config.id);
+    GameState.getInstance().updateProgress('Level3ProgrammingScene', 3, config.id);
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level3ProgramMissionScene',
+      sceneId: 'Level3ProgrammingScene',
       challengeId: config.id,
       eventType: 'challenge_started'
     });
@@ -181,7 +181,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
         this.updateProgramQueueUI(config);
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level3ProgramMissionScene',
+          sceneId: 'Level3ProgrammingScene',
           challengeId: config.id,
           eventType: 'program_changed',
           payload: { command_added: cmd, current_program: this.currentCommands }
@@ -244,7 +244,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
     const res = ProgramGridEngine.simulateProgram(config, this.currentCommands);
 
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level3ProgramMissionScene',
+      sceneId: 'Level3ProgrammingScene',
       challengeId: config.id,
       eventType: 'simulation_started',
       attemptNumber: this.attemptCount,
@@ -274,14 +274,14 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
         if (fb) fb.innerText = res.feedback;
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level3ProgramMissionScene',
+          sceneId: 'Level3ProgrammingScene',
           challengeId: config.id,
           eventType: 'feedback_shown',
           payload: { feedback: res.feedback, result: res.success ? 'success' : 'failed' }
         });
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level3ProgramMissionScene',
+          sceneId: 'Level3ProgrammingScene',
           challengeId: config.id,
           eventType: 'attempt_finished',
           attemptNumber: this.attemptCount,
@@ -291,7 +291,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
 
         if (res.success) {
           TelemetryService.getInstance().recordEvent({
-            sceneId: 'Level3ProgramMissionScene',
+            sceneId: 'Level3ProgrammingScene',
             challengeId: config.id,
             eventType: 'challenge_completed',
             attemptNumber: this.attemptCount
@@ -331,7 +331,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
       }
 
       TelemetryService.getInstance().recordEvent({
-        sceneId: 'Level3ProgramMissionScene',
+        sceneId: 'Level3ProgrammingScene',
         challengeId: config.id,
         eventType: 'command_executed',
         payload: { step: stepIndex, state: st }
@@ -348,10 +348,10 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
     const { width, height } = this.scale;
     this.children.removeAll();
     PlaceholderArt.drawSpaceLabBackground(this);
-    GameState.getInstance().updateProgress('Level3ProgramMissionScene', 3, '3C_LANDING');
+    GameState.getInstance().updateProgress('Level3ProgrammingScene', 3, '3C_LANDING');
 
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level3ProgramMissionScene',
+      sceneId: 'Level3ProgrammingScene',
       challengeId: '3C_LANDING',
       eventType: 'challenge_started'
     });
@@ -443,7 +443,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
         );
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level3ProgramMissionScene',
+          sceneId: 'Level3ProgrammingScene',
           challengeId: '3C_LANDING',
           eventType: 'solution_submitted',
           attemptNumber: this.landingAttempts,
@@ -460,14 +460,14 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
         if (fb) fb.innerText = res.feedback;
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level3ProgramMissionScene',
+          sceneId: 'Level3ProgrammingScene',
           challengeId: '3C_LANDING',
           eventType: 'feedback_shown',
           payload: { feedback: res.feedback, result: res.success ? 'success' : 'failed' }
         });
 
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level3ProgramMissionScene',
+          sceneId: 'Level3ProgrammingScene',
           challengeId: '3C_LANDING',
           eventType: 'attempt_finished',
           attemptNumber: this.landingAttempts,
@@ -485,7 +485,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
           } else {
             // Completed all 4 phases!
             TelemetryService.getInstance().recordEvent({
-              sceneId: 'Level3ProgramMissionScene',
+              sceneId: 'Level3ProgrammingScene',
               challengeId: '3C_LANDING',
               eventType: 'challenge_completed'
             });

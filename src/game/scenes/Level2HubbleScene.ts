@@ -6,7 +6,7 @@ import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
 import { clearApuLabDom } from '../../ui/domComponents';
 
-export class Level1HubbleScene extends Phaser.Scene {
+export class Level2HubbleScene extends Phaser.Scene {
   private challengeIndex: number = 0;
   private engine!: GraphChallengeEngine;
   private challengeStartTime: number = Date.now();
@@ -15,7 +15,7 @@ export class Level1HubbleScene extends Phaser.Scene {
   private nodeGraphics: Map<string, Phaser.GameObjects.Container> = new Map();
 
   constructor() {
-    super({ key: 'Level1HubbleScene' });
+    super({ key: 'Level2HubbleScene' });
   }
 
   create() {
@@ -31,11 +31,11 @@ export class Level1HubbleScene extends Phaser.Scene {
 
     // Background Art
     PlaceholderArt.drawSpaceLabBackground(this);
-    GameState.getInstance().updateProgress('Level1HubbleScene', 2, '2A_HUBBLE');
+    GameState.getInstance().updateProgress('Level2HubbleScene', 2, '2A_HUBBLE');
 
     const config = HUBBLE_CHALLENGES[index];
     if (!config) {
-      this.scene.start('Level3ProgramMissionScene');
+      this.scene.start('Level3ProgrammingScene');
       return;
     }
 
@@ -44,7 +44,7 @@ export class Level1HubbleScene extends Phaser.Scene {
 
     // Log telemetry: challenge_started (Internal IDs stay in English)
     TelemetryService.getInstance().recordEvent({
-      sceneId: 'Level1HubbleScene',
+      sceneId: 'Level2HubbleScene',
       challengeId: '2A_HUBBLE',
       eventType: 'challenge_started'
     });
@@ -157,7 +157,7 @@ export class Level1HubbleScene extends Phaser.Scene {
       container.on('pointerdown', () => {
         const res = this.engine.selectNode(n.id);
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level1HubbleScene',
+          sceneId: 'Level2HubbleScene',
           challengeId: '2A_HUBBLE',
           eventType: 'selection_changed',
           payload: { selected_node: n.id, current_path: this.engine.state.currentPath },
@@ -243,7 +243,7 @@ export class Level1HubbleScene extends Phaser.Scene {
       const durationSeconds = Math.round((Date.now() - this.challengeStartTime) / 1000);
 
       TelemetryService.getInstance().recordEvent({
-        sceneId: 'Level1HubbleScene',
+        sceneId: 'Level2HubbleScene',
         challengeId,
         eventType: 'solution_submitted',
         attemptNumber: this.engine.state.attempts,
@@ -257,14 +257,14 @@ export class Level1HubbleScene extends Phaser.Scene {
       if (this.feedbackText) this.feedbackText.setText(res.feedback);
 
       TelemetryService.getInstance().recordEvent({
-        sceneId: 'Level1HubbleScene',
+        sceneId: 'Level2HubbleScene',
         challengeId,
         eventType: 'feedback_shown',
         payload: { feedback: res.feedback, result: res.success ? 'success' : 'failed' }
       });
 
       TelemetryService.getInstance().recordEvent({
-        sceneId: 'Level1HubbleScene',
+        sceneId: 'Level2HubbleScene',
         challengeId,
         eventType: 'attempt_finished',
         attemptNumber: this.engine.state.attempts,
@@ -278,7 +278,7 @@ export class Level1HubbleScene extends Phaser.Scene {
       if (res.success) {
         // Record completed
         TelemetryService.getInstance().recordEvent({
-          sceneId: 'Level1HubbleScene',
+          sceneId: 'Level2HubbleScene',
           challengeId,
           eventType: 'challenge_completed',
           attemptNumber: this.engine.state.attempts,
@@ -295,7 +295,7 @@ export class Level1HubbleScene extends Phaser.Scene {
 
         setTimeout(() => {
           ctrlDiv.remove();
-          this.scene.start('Level3ProgramMissionScene');
+          this.scene.start('Level3ProgrammingScene');
         }, 1800);
       }
     };
@@ -303,7 +303,7 @@ export class Level1HubbleScene extends Phaser.Scene {
     hintBtn.onclick = () => {
       const hintMsg = this.engine.requestHint();
       TelemetryService.getInstance().recordEvent({
-        sceneId: 'Level1HubbleScene',
+        sceneId: 'Level2HubbleScene',
         challengeId,
         eventType: 'hint_requested',
         hintUsed: true

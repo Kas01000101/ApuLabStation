@@ -78,6 +78,7 @@ ALTER TABLE apulab_events
   ADD COLUMN IF NOT EXISTS sync_status VARCHAR(32) NOT NULL DEFAULT 'pending';
 
 -- Indexes for performance telemetry analytics
+CREATE UNIQUE INDEX IF NOT EXISTS idx_apulab_events_event_id_unique ON apulab_events(event_id);
 CREATE INDEX IF NOT EXISTS idx_apulab_events_session ON apulab_events(session_id);
 CREATE INDEX IF NOT EXISTS idx_apulab_events_type ON apulab_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_apulab_events_challenge ON apulab_events(challenge_id);
