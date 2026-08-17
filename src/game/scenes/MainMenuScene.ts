@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
 import mainMenuLayoutRaw from './MainMenuLayout.scene?raw';
 import { GameState } from '../../systems/GameState';
-import { ApuMenuButton, type ApuMenuButtonIcon, type ApuMenuButtonVariant } from '../components/ApuMenuButton';
+import { ApuButton, type ApuButtonVariant } from '../../ui/components/ApuButton';
+import { uiTokens } from '../../ui/tokens';
 import { DialoguePanel } from '../components/DialoguePanel';
 import { clearApuLabDom } from '../../ui/domComponents';
 
@@ -40,24 +41,24 @@ export class MainMenuScene extends Phaser.Scene {
     this.createEditorLayout();
 
     const panel = this.add.graphics();
-    panel.fillStyle(0x2D2654, 0.85);
-    panel.lineStyle(3, 0x4D4288, 1);
-    panel.fillRoundedRect(width / 2 - 360, 60, 720, 190, 24);
-    panel.strokeRoundedRect(width / 2 - 360, 60, 720, 190, 24);
+    panel.fillStyle(this.toColor(uiTokens.colors.surface.panel), 0.78);
+    panel.lineStyle(3, this.toColor(uiTokens.colors.border.subtle), 0.86);
+    panel.fillRoundedRect(width / 2 - 360, 60, 720, 190, uiTokens.radius.large);
+    panel.strokeRoundedRect(width / 2 - 360, 60, 720, 190, uiTokens.radius.large);
 
     const titleText = this.add.text(width / 2, 115, 'APULAB STATION', {
-      fontFamily: 'Space Grotesk, sans-serif',
-      fontSize: '52px',
-      color: '#00F2FE',
-      fontStyle: 'bold'
+      fontFamily: uiTokens.typography.display.family,
+      fontSize: `${uiTokens.typography.display.xl}px`,
+      color: uiTokens.colors.text.accent,
+      fontStyle: uiTokens.typography.display.weight
     }).setOrigin(0.5);
 
-    titleText.setShadow(0, 0, '#00F2FE', 16, true, true);
+    titleText.setShadow(0, 0, uiTokens.colors.text.accent, 10, true, true);
 
     this.add.text(width / 2, 185, 'Explora, experimenta y crea tu misión.', {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '22px',
-      color: '#F8F9FA'
+      fontFamily: uiTokens.typography.body.family,
+      fontSize: `${uiTokens.typography.body.size + 2}px`,
+      color: uiTokens.colors.text.onDark
     }).setOrigin(0.5);
 
     this.createMenuButtons();
@@ -86,18 +87,16 @@ export class MainMenuScene extends Phaser.Scene {
     const { width } = this.scale;
     const buttonX = width - 265;
     const groupCenterY = 430;
-    const buttonWidth = 350;
-    const buttonHeight = 72;
-    const gap = 16;
+    const buttonWidth = uiTokens.button.width;
+    const buttonHeight = uiTokens.button.height;
+    const gap = uiTokens.button.verticalGap;
     const buttons: Array<{
       label: string;
-      icon: ApuMenuButtonIcon;
-      variant: ApuMenuButtonVariant;
+      variant: ApuButtonVariant;
       onClick: () => void;
     }> = [
       {
         label: 'INICIAR MISIÓN',
-        icon: 'rocket',
         variant: 'primary',
         onClick: () => {
           clearApuLabDom();
@@ -109,7 +108,6 @@ export class MainMenuScene extends Phaser.Scene {
     if (GameState.hasRecoverableSession()) {
       buttons.push({
         label: 'CONTINUAR',
-        icon: 'resume',
         variant: 'secondary',
         onClick: () => {
           const gameState = GameState.getInstance();
@@ -123,16 +121,14 @@ export class MainMenuScene extends Phaser.Scene {
     buttons.push(
       {
         label: 'AJUSTES',
-        icon: 'settings',
-        variant: 'utility',
+        variant: 'utilityDark',
         onClick: () => {
           window.alert('Control de audio y volumen estará disponible en la versión v0.2.');
         }
       },
       {
         label: 'CRÉDITOS',
-        icon: 'credits',
-        variant: 'utility',
+        variant: 'utilityLight',
         onClick: () => this.showCreditsModal()
       }
     );
@@ -141,17 +137,20 @@ export class MainMenuScene extends Phaser.Scene {
     const firstButtonY = groupCenterY - totalHeight / 2 + buttonHeight / 2;
 
     buttons.forEach((button, index) => {
-      new ApuMenuButton(this, {
+      new ApuButton(this, {
         x: buttonX,
         y: firstButtonY + index * (buttonHeight + gap),
         width: buttonWidth,
         height: buttonHeight,
         label: button.label,
-        icon: button.icon,
         variant: button.variant,
         onClick: button.onClick
       }).setDepth(50);
     });
+  }
+
+  private toColor(value: string): number {
+    return Phaser.Display.Color.HexStringToColor(value).color;
   }
 
   private showCreditsModal(): void {

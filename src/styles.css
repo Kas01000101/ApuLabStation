@@ -4,8 +4,8 @@
   --panel-purple: #2D2654;
   --panel-purple-light: #3B326B;
   --panel-border: #4D4288;
-  --accent-teal: #00F2FE;
-  --accent-teal-glow: rgba(0, 242, 254, 0.4);
+  --accent-teal: #4EDDE8;
+  --accent-teal-glow: rgba(78, 221, 232, 0.28);
   --btn-yellow: #FFD166;
   --btn-yellow-hover: #FFE085;
   --btn-yellow-shadow: #D49B00;
@@ -13,8 +13,8 @@
   --accent-coral-hover: #FF8585;
   --text-light: #F8F9FA;
   --text-muted: #B8C2CC;
-  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Space Grotesk', sans-serif;
+  --font-main: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Fredoka', sans-serif;
 }
 
 * {

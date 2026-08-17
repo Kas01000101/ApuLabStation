@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
-import { UI_TOKENS } from '../../ui/tokens';
-import { ApuMenuButton } from './ApuMenuButton';
+import { UI_TOKENS, uiTokens } from '../../ui/tokens';
+import { ApuButton } from '../../ui/components/ApuButton';
 
 export interface DialoguePanelOptions {
   title: string;
@@ -26,7 +26,7 @@ export class DialoguePanel extends Phaser.GameObjects.Container {
 
     const title = scene.add.text(0, -96, options.title, {
       fontFamily: UI_TOKENS.typography.heading,
-      fontSize: '30px',
+      fontSize: `${uiTokens.typography.heading.size}px`,
       fontStyle: 'bold',
       color: UI_TOKENS.colors.accent,
       align: 'center'
@@ -34,19 +34,18 @@ export class DialoguePanel extends Phaser.GameObjects.Container {
 
     const body = scene.add.text(0, -24, options.body, {
       fontFamily: UI_TOKENS.typography.body,
-      fontSize: '20px',
+      fontSize: `${uiTokens.typography.body.size}px`,
       color: UI_TOKENS.colors.text,
       align: 'center',
       wordWrap: { width: 500 }
     }).setOrigin(0.5);
 
-    const closeButton = new ApuMenuButton(scene, {
+    const closeButton = new ApuButton(scene, {
       x: 0,
       y: 96,
-      width: 220,
-      height: 58,
+      width: 240,
+      height: 60,
       label: options.buttonLabel,
-      icon: 'close',
       variant: 'primary',
       onClick: () => {
         options.onClose();
