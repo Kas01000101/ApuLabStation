@@ -32,7 +32,7 @@ serve(async (req) => {
 
     if (path.endsWith('/events')) {
       const { events } = await req.json();
-      const { error } = await supabase.from('apulab_events').insert(events);
+      const { error } = await supabase.from('apulab_events').upsert(events, { onConflict: 'event_id' });
       if (error) throw error;
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

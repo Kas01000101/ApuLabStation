@@ -5,7 +5,7 @@ export class AwsClient {
     return import.meta.env.VITE_APULAB_API_URL;
   }
 
-  public static async startSession(sessionId: string, participantCode: string): Promise<boolean> {
+  public static async startSession(sessionId: string, participantCode: string | null): Promise<boolean> {
     const url = AwsClient.getApiUrl();
     if (!url) {
       console.log('[AwsClient] AWS disabled. Using local telemetry only.');

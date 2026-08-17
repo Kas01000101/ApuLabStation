@@ -1,4 +1,5 @@
 export type SyncStatus = "local_only" | "pending" | "synced" | "failed";
+export type SessionMode = "study" | "demo";
 
 export type EventType =
   | 'session_started'
@@ -6,6 +7,7 @@ export type EventType =
   | 'assessment_response'
   | 'challenge_started'
   | 'selection_changed'
+  | 'solution_changed'
   | 'hint_requested'
   | 'solution_submitted'
   | 'feedback_shown'
@@ -24,8 +26,10 @@ export type EventType =
 export interface TelemetryEvent {
   event_id: string;
   session_id: string;
-  participant_code: string;
+  participant_code: string | null;
+  session_mode: SessionMode;
   build_version: string;
+  schema_version: string;
   scene_id: string;
   challenge_id?: string;
   event_type: EventType | string;
@@ -41,10 +45,12 @@ export interface TelemetryEvent {
 
 export interface SessionData {
   session_id: string;
-  participant_code: string;
+  participant_code: string | null;
+  session_mode: SessionMode;
   build_version: string;
+  schema_version: string;
   started_at: string;
-  finished_at?: string;
+  completed_at?: string;
   status: "in_progress" | "completed";
   screen_width: number;
   screen_height: number;

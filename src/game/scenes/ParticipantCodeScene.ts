@@ -3,6 +3,7 @@ import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { AwsClient } from '../../systems/AwsClient';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { clearApuLabDom, createOverlay } from '../../ui/domComponents';
 
 export class ParticipantCodeScene extends Phaser.Scene {
   constructor() {
@@ -10,69 +11,60 @@ export class ParticipantCodeScene extends Phaser.Scene {
   }
 
   create() {
+    clearApuLabDom();
     PlaceholderArt.drawSpaceLabBackground(this);
     this.createDOMInput();
   }
 
   private createDOMInput(): void {
-    const container = document.getElementById('game-container');
-    if (!container) return;
-
-    const existing = document.getElementById('part-code-dom');
-    if (existing) existing.remove();
-
-    const overlay = document.createElement('div');
-    overlay.id = 'part-code-dom';
-    overlay.className = 'apulab-overlay';
-    overlay.innerHTML = `
+    const overlay = createOverlay('part-code-dom', `
       <div class="apulab-card">
-        <div class="apulab-title">IDENTIFICACIÓN</div>
-        <div class="apulab-subtitle">Ingresa tu código anónimo de participante.</div>
-        <input type="text" id="part-code-input" class="apulab-input" placeholder="APU-001" value="APU-001" maxlength="12" autofocus />
+        <div class="apulab-title">INICIAR MISIÓN</div>
+        <div class="apulab-subtitle">¿Tienes un código de participante?</div>
+        <input type="text" id="part-code-input" class="apulab-input" placeholder="APU-001" maxlength="32" autofocus />
         <div id="code-error-msg" style="color: var(--accent-coral); font-weight: 600; min-height: 24px; margin-bottom: 12px;"></div>
-        <div>
-          <button id="submit-code-btn" class="apulab-btn-primary">INICIAR MISIÓN ➔</button>
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+          <button id="submit-code-btn" class="apulab-btn-primary">CONTINUAR CON CÓDIGO</button>
+          <button id="skip-code-btn" class="apulab-btn-secondary">JUGAR SIN CÓDIGO</button>
         </div>
       </div>
-    `;
-
-    container.appendChild(overlay);
+    `);
+    if (!overlay) return;
 
     const inputEl = document.getElementById('part-code-input') as HTMLInputElement;
     const submitBtn = document.getElementById('submit-code-btn');
+    const skipBtn = document.getElementById('skip-code-btn');
     const errorEl = document.getElementById('code-error-msg');
 
-    const handleSubmission = () => {
-      const code = inputEl.value.trim();
-      if (!code) {
-        if (errorEl) errorEl.innerText = 'Por favor ingresa un código anónimo de participante válido (ej. APU-001).';
+    const startSession = (mode: 'study' | 'demo') => {
+      const rawCode = inputEl.value.trim();
+      if (mode === 'study' && !rawCode) {
+        if (errorEl) errorEl.innerText = 'Ingresa el código anónimo entregado para el estudio.';
         return;
       }
 
-      // Save state
       const gameState = GameState.getInstance();
-      gameState.setParticipantCode(code);
+      gameState.startNewSession(mode, mode === 'study' ? rawCode : null);
 
-      // Record Telemetry (Keep event names & internal IDs in English)
       TelemetryService.getInstance().recordEvent({
         sceneId: 'ParticipantCodeScene',
         eventType: 'session_started',
-        payload: { participant_code: gameState.participantCode, session_id: gameState.sessionId }
+        payload: {
+          session_id: gameState.sessionId,
+          session_mode: gameState.sessionMode
+        }
       });
 
-      // Optional AWS start call
       AwsClient.startSession(gameState.sessionId, gameState.participantCode);
 
-      // Clean up overlay and go to OpportunityIntroScene
-      overlay.remove();
+      clearApuLabDom();
       this.scene.start('OpportunityIntroScene');
     };
 
-    if (submitBtn) submitBtn.onclick = handleSubmission;
-    if (inputEl) {
-      inputEl.onkeydown = (e) => {
-        if (e.key === 'Enter') handleSubmission();
-      };
-    }
+    submitBtn?.addEventListener('click', () => startSession('study'));
+    skipBtn?.addEventListener('click', () => startSession('demo'));
+    inputEl?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') startSession('study');
+    });
   }
 }

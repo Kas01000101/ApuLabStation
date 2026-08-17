@@ -87,6 +87,56 @@ body, html {
   text-align: center;
 }
 
+.apulab-action-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  min-width: 320px;
+}
+
+.apulab-btn-primary:disabled,
+.apulab-btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.apulab-dialogue-box,
+.apulab-feedback-panel {
+  background: rgba(20, 25, 56, 0.85);
+  border: 2px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 18px;
+  color: var(--text-light);
+}
+
+.apulab-dialogue-title,
+.apulab-challenge-header {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--accent-teal);
+}
+
+.apulab-dialogue-body {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
+.apulab-challenge-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.apulab-progress-indicator {
+  color: var(--btn-yellow);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
 .apulab-title {
   font-family: var(--font-heading);
   font-size: 2.2rem;

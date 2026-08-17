@@ -4,11 +4,9 @@ import { BootScene } from './scenes/BootScene';
 import { MainMenuScene } from './scenes/MainMenuScene';
 import { ParticipantCodeScene } from './scenes/ParticipantCodeScene';
 import { OpportunityIntroScene } from './scenes/OpportunityIntroScene';
-import { PretestScene } from './scenes/PretestScene';
 import { Level1HubbleScene } from './scenes/Level1HubbleScene';
 import { Level2RoverLabScene } from './scenes/Level2RoverLabScene';
 import { Level3ProgramMissionScene } from './scenes/Level3ProgramMissionScene';
-import { PosttestScene } from './scenes/PosttestScene';
 import { FinalScene } from './scenes/FinalScene';
 
 export const phaserConfig: Phaser.Types.Core.GameConfig = {
@@ -26,11 +24,9 @@ export const phaserConfig: Phaser.Types.Core.GameConfig = {
     MainMenuScene,
     ParticipantCodeScene,
     OpportunityIntroScene,
-    PretestScene,
-    Level1HubbleScene,
     Level2RoverLabScene,
+    Level1HubbleScene,
     Level3ProgramMissionScene,
-    PosttestScene,
     FinalScene
   ]
 };

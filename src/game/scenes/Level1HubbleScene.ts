@@ -4,6 +4,7 @@ import { GraphChallengeEngine } from '../../engines/GraphChallengeEngine';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { clearApuLabDom } from '../../ui/domComponents';
 
 export class Level1HubbleScene extends Phaser.Scene {
   private challengeIndex: number = 0;
@@ -18,6 +19,7 @@ export class Level1HubbleScene extends Phaser.Scene {
   }
 
   create() {
+    clearApuLabDom();
     this.challengeIndex = 0;
     this.loadChallenge(0);
   }
@@ -29,10 +31,11 @@ export class Level1HubbleScene extends Phaser.Scene {
 
     // Background Art
     PlaceholderArt.drawSpaceLabBackground(this);
+    GameState.getInstance().updateProgress('Level1HubbleScene', 2, '2A_HUBBLE');
 
     const config = HUBBLE_CHALLENGES[index];
     if (!config) {
-      this.scene.start('Level2RoverLabScene');
+      this.scene.start('Level3ProgramMissionScene');
       return;
     }
 
@@ -42,7 +45,7 @@ export class Level1HubbleScene extends Phaser.Scene {
     // Log telemetry: challenge_started (Internal IDs stay in English)
     TelemetryService.getInstance().recordEvent({
       sceneId: 'Level1HubbleScene',
-      challengeId: config.id,
+      challengeId: '2A_HUBBLE',
       eventType: 'challenge_started'
     });
 
@@ -53,7 +56,7 @@ export class Level1HubbleScene extends Phaser.Scene {
     header.fillRoundedRect(20, 15, width - 40, 90, 16);
     header.strokeRoundedRect(20, 15, width - 40, 90, 16);
 
-    this.add.text(40, 30, config.title.toUpperCase(), {
+    this.add.text(40, 30, 'NIVEL 2A: HUBBLE'.toUpperCase(), {
       fontFamily: 'Space Grotesk, sans-serif',
       fontSize: '28px',
       color: '#00F2FE',
@@ -105,7 +108,7 @@ export class Level1HubbleScene extends Phaser.Scene {
     });
 
     // HTML DOM Action Buttons Overlay (PROBAR RUTA, PISTA, REINICIAR RUTA)
-    this.createControlsDOM(config.id);
+    this.createControlsDOM('2A_HUBBLE');
 
     this.updateUI();
   }
@@ -155,7 +158,7 @@ export class Level1HubbleScene extends Phaser.Scene {
         const res = this.engine.selectNode(n.id);
         TelemetryService.getInstance().recordEvent({
           sceneId: 'Level1HubbleScene',
-          challengeId: config.id,
+          challengeId: '2A_HUBBLE',
           eventType: 'selection_changed',
           payload: { selected_node: n.id, current_path: this.engine.state.currentPath },
           result: res.success ? 'success' : 'error',
@@ -290,20 +293,9 @@ export class Level1HubbleScene extends Phaser.Scene {
           durationSeconds
         });
 
-        // 1C Special Mars Revelation Event
-        if (challengeId === '1C_HUBBLE_TRANSFER') {
-          TelemetryService.getInstance().recordEvent({
-            sceneId: 'Level1HubbleScene',
-            challengeId,
-            eventType: 'mars_revealed',
-            payload: { destination: 'Mars' }
-          });
-        }
-
         setTimeout(() => {
           ctrlDiv.remove();
-          this.challengeIndex++;
-          this.loadChallenge(this.challengeIndex);
+          this.scene.start('Level3ProgramMissionScene');
         }, 1800);
       }
     };

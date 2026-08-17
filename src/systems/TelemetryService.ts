@@ -1,7 +1,6 @@
 import { TelemetryEvent, SyncStatus } from '../types/telemetry';
 import { GameState } from './GameState';
 import { LocalQueueService } from './LocalQueueService';
-import { AwsClient } from './AwsClient';
 import { SyncService } from './SyncService';
 
 export interface RecordEventOptions {
@@ -35,7 +34,9 @@ export class TelemetryService {
       event_id: eventId,
       session_id: gameState.sessionId,
       participant_code: gameState.participantCode,
+      session_mode: gameState.sessionMode,
       build_version: gameState.buildVersion,
+      schema_version: gameState.schemaVersion,
       scene_id: opts.sceneId,
       challenge_id: opts.challengeId,
       event_type: opts.eventType,
@@ -52,14 +53,8 @@ export class TelemetryService {
     // 1. SAVE LOCALLY FIRST (Offline-first rule)
     LocalQueueService.addEvent(event);
 
-    // 2. Background attempt to sync with Supabase and AWS
+    // 2. Background attempt to sync with Supabase
     SyncService.processQueue();
-
-    AwsClient.sendEvent(event).then((success) => {
-      if (success) {
-        LocalQueueService.updateEventStatus(eventId, 'synced');
-      }
-    });
 
     console.log(`[Telemetry] Recorded event: ${opts.eventType} (${opts.sceneId})`, event);
 

@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
+import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { clearApuLabDom } from '../../ui/domComponents';
 
 export class OpportunityIntroScene extends Phaser.Scene {
   constructor() {
@@ -8,6 +10,8 @@ export class OpportunityIntroScene extends Phaser.Scene {
   }
 
   create() {
+    clearApuLabDom();
+    GameState.getInstance().updateProgress('OpportunityIntroScene', 0, 'INTRO_STORY');
     PlaceholderArt.drawSpaceLabBackground(this);
     this.createDOMOverlay();
   }
@@ -33,6 +37,12 @@ export class OpportunityIntroScene extends Phaser.Scene {
         </div>
 
         <div style="background: rgba(20, 25, 56, 0.7); border: 2px solid var(--panel-border); border-radius: 16px; padding: 20px; margin-bottom: 24px; text-align: left;">
+          <p style="font-size: 1.12rem; line-height: 1.55; color: #E2E8F0; margin-bottom: 12px;">
+            La estación ApuLab recibió una misión urgente: preparar un rover para explorar, observar el espacio con ayuda del Hubble y programar una secuencia segura hacia Marte.
+          </p>
+          <p style="font-size: 1.12rem; line-height: 1.55; color: #FFD166; margin-bottom: 12px; font-weight: 700;">
+            Katherine Johnson mostró cómo las matemáticas podían guiar misiones espaciales reales. Hoy usarás ese mismo espíritu de precisión y curiosidad.
+          </p>
           <p style="font-size: 1.25rem; line-height: 1.6; color: #F8F9FA;">
             "Hola, soy <strong>Opportunity</strong>. Un rover es un robot explorador. Tiene ruedas, cámaras, sensores, una computadora y una antena."
           </p>
@@ -55,7 +65,7 @@ export class OpportunityIntroScene extends Phaser.Scene {
           eventType: 'opportunity_intro_completed'
         });
         overlay.remove();
-        this.scene.start('PretestScene');
+        this.scene.start('Level2RoverLabScene');
       };
     }
   }

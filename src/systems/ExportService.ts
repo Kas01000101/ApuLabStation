@@ -22,9 +22,11 @@ export class ExportService {
       session_metadata: {
         session_id: gameState.sessionId,
         participant_code: gameState.participantCode,
+        session_mode: gameState.sessionMode,
         build_version: gameState.buildVersion,
+        schema_version: gameState.schemaVersion,
         started_at: gameState.startedAt,
-        finished_at: gameState.finishedAt,
+        completed_at: gameState.completedAt,
         total_events: telemetryEvents.length
       },
       pretest_answers: gameState.pretestAnswers,
@@ -34,7 +36,8 @@ export class ExportService {
     };
 
     const jsonStr = JSON.stringify(data, null, 2);
-    const filename = `apulab_session_${gameState.participantCode}_${Date.now()}.json`;
+    const sessionLabel = gameState.participantCode || 'demo';
+    const filename = `apulab_session_${sessionLabel}_${Date.now()}.json`;
     ExportService.downloadFile(filename, jsonStr, 'application/json');
   }
 
@@ -46,7 +49,9 @@ export class ExportService {
       'event_id',
       'session_id',
       'participant_code',
+      'session_mode',
       'build_version',
+      'schema_version',
       'scene_id',
       'challenge_id',
       'event_type',
@@ -63,7 +68,9 @@ export class ExportService {
       ExportService.escapeCsv(e.event_id),
       ExportService.escapeCsv(e.session_id),
       ExportService.escapeCsv(e.participant_code),
+      ExportService.escapeCsv(e.session_mode),
       ExportService.escapeCsv(e.build_version),
+      ExportService.escapeCsv(e.schema_version),
       ExportService.escapeCsv(e.scene_id),
       ExportService.escapeCsv(e.challenge_id || ''),
       ExportService.escapeCsv(e.event_type),
@@ -82,11 +89,12 @@ export class ExportService {
     ];
 
     const csvContent = csvLines.join('\n');
-    const filename = `apulab_telemetry_${gameState.participantCode}_${Date.now()}.csv`;
+    const sessionLabel = gameState.participantCode || 'demo';
+    const filename = `apulab_telemetry_${sessionLabel}_${Date.now()}.csv`;
     ExportService.downloadFile(filename, csvContent, 'text/csv;charset=utf-8;');
   }
 
-  private static escapeCsv(field: string): string {
+  private static escapeCsv(field: string | null | undefined): string {
     if (field === null || field === undefined) return '""';
     const str = String(field);
     if (str.includes(',') || str.includes('"') || str.includes('\n')) {

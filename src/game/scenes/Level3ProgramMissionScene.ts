@@ -5,6 +5,7 @@ import { GridCommand } from '../../types/challenges';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { clearApuLabDom } from '../../ui/domComponents';
 
 export class Level3ProgramMissionScene extends Phaser.Scene {
   private stageIndex: number = 0; // 0 = 3A, 1 = 3B, 2 = 3C
@@ -23,6 +24,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
   }
 
   create() {
+    clearApuLabDom();
     this.stageIndex = 0;
     this.loadStage(0);
   }
@@ -49,6 +51,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
     PlaceholderArt.drawSpaceLabBackground(this);
 
     const config = PROGRAMMING_CHALLENGES[index];
+    GameState.getInstance().updateProgress('Level3ProgramMissionScene', 3, config.id);
     TelemetryService.getInstance().recordEvent({
       sceneId: 'Level3ProgramMissionScene',
       challengeId: config.id,
@@ -293,6 +296,13 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
             eventType: 'challenge_completed',
             attemptNumber: this.attemptCount
           });
+          GameState.getInstance().recordChallengeResult({
+            challengeId: config.id,
+            attempts: this.attemptCount,
+            completed: true,
+            hintsUsed: false,
+            durationSeconds: 0
+          });
 
           setTimeout(() => {
             const dom = document.getElementById('prog-grid-dom');
@@ -338,6 +348,7 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
     const { width, height } = this.scale;
     this.children.removeAll();
     PlaceholderArt.drawSpaceLabBackground(this);
+    GameState.getInstance().updateProgress('Level3ProgramMissionScene', 3, '3C_LANDING');
 
     TelemetryService.getInstance().recordEvent({
       sceneId: 'Level3ProgramMissionScene',
@@ -478,10 +489,17 @@ export class Level3ProgramMissionScene extends Phaser.Scene {
               challengeId: '3C_LANDING',
               eventType: 'challenge_completed'
             });
+            GameState.getInstance().recordChallengeResult({
+              challengeId: '3C_LANDING',
+              attempts: this.landingAttempts,
+              completed: true,
+              hintsUsed: false,
+              durationSeconds: 0
+            });
 
             setTimeout(() => {
               overlay.remove();
-              this.scene.start('PosttestScene');
+              this.scene.start('FinalScene');
             }, 1800);
           }
         }

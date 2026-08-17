@@ -15,9 +15,7 @@ export class SyncService {
     try {
       // 1. Sync session state first if needed
       const gameState = GameState.getInstance();
-      if (gameState.participantCode) {
-        await SupabaseClient.ingestSession(gameState.getSessionData());
-      }
+      await SupabaseClient.ingestSession(gameState.getSessionData());
 
       // 2. Fetch pending events from localStorage
       const events = LocalQueueService.getEvents();
@@ -40,7 +38,9 @@ export class SyncService {
           event_id: 'sync-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
           session_id: gameState.sessionId,
           participant_code: gameState.participantCode,
+          session_mode: gameState.sessionMode,
           build_version: gameState.buildVersion,
+          schema_version: gameState.schemaVersion,
           scene_id: gameState.currentScene,
           event_type: 'sync_success',
           payload: { count: pendingEvents.length },
@@ -56,7 +56,9 @@ export class SyncService {
           event_id: 'sync-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
           session_id: gameState.sessionId,
           participant_code: gameState.participantCode,
+          session_mode: gameState.sessionMode,
           build_version: gameState.buildVersion,
+          schema_version: gameState.schemaVersion,
           scene_id: gameState.currentScene,
           event_type: 'sync_failed',
           payload: { count: pendingEvents.length, error: res.error },
