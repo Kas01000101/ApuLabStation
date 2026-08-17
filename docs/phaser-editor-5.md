@@ -8,6 +8,8 @@ Recommended next structure, when real assets are introduced:
 public/
   assets/
     boot/
+      menu/
+        menu-pack.json
     common/
       ui/
       characters/
@@ -65,3 +67,36 @@ Create the first Scene Editor file from Phaser Editor 5, not by hand:
 7. Add images by first placing PNGs under `public/assets/level1/energy/`, then registering them in `level1-energy-pack.json`.
 
 Keep the `.scene` responsible for presentation only: position, scale, origin, rotation, depth, containers, layers, and texture references. Gameplay interaction, scientific evaluation, telemetry, and persistence stay in TypeScript systems/controllers.
+
+## Main Menu Visual Pipeline
+
+The Main Menu asset pack lives at:
+
+```text
+public/assets/boot/menu/menu-pack.json
+```
+
+It starts with an empty `menu` section. Planned stable keys:
+
+```text
+menu_background
+apulab_logo
+button_primary
+button_secondary
+icon_settings
+icon_credits
+```
+
+Do not bake button labels into PNGs. Labels such as `INICIAR MISIÓN`, `CONTINUAR`, `AJUSTES`, and `CRÉDITOS` should remain Phaser Text or BitmapText so `MainMenuScene.ts` can keep deciding visibility and behavior.
+
+Create the visual menu layout from Phaser Editor 5, not by hand:
+
+1. Open this repository folder in Phaser Editor 5.
+2. In `Files`, select `src/game/scenes/editor`.
+3. Choose `New File`.
+4. Choose `Scene File`.
+5. Name it `MainMenuLayout.scene`.
+6. Set the scene display size to `1280 x 720`.
+7. Add images by first placing PNGs under `public/assets/boot/menu/`, then registering them in `menu-pack.json`.
+
+`MainMenuLayout.scene` should be composition only. Keep navigation, `CONTINUAR` visibility, and session decisions in `MainMenuScene.ts` and `GameState`.
