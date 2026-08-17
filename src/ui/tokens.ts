@@ -2,7 +2,7 @@ const colors = {
   brand: {
     purple: '#2D2654',
     lavender: '#8E7DCE',
-    cyan: '#4EDDE8',
+    cyan: '#49C9D7',
     cream: '#FFF7E8'
   },
   surface: {
@@ -14,32 +14,36 @@ const colors = {
     overlay: '#0B0E26'
   },
   action: {
-    primary: '#FFD166',
-    primaryHover: '#FFE38A',
-    primaryPressed: '#E5B64E',
-    primaryBorder: '#FFF0B8',
-    primaryShadow: '#C99935',
-    secondary: '#4EDDE8',
-    secondaryHover: '#75EAF2',
-    secondaryPressed: '#2CBAC7',
-    secondaryBorder: '#BDF8FC',
-    secondaryShadow: '#2097A3',
-    utilityDark: '#3B326B',
-    utilityDarkHover: '#4D4288',
-    utilityDarkPressed: '#2D2654',
-    utilityDarkBorder: '#7163AD',
-    utilityDarkShadow: '#211B41',
-    utilityLight: '#8E7DCE',
-    utilityLightHover: '#A696E0',
-    utilityLightPressed: '#7563B6',
-    utilityLightBorder: '#C8BEF1',
-    utilityLightShadow: '#5C4C99'
+    primary: '#F4C75E',
+    primaryHover: '#F7D06F',
+    primaryPressed: '#DDB047',
+    primaryBorder: '#FFE5A3',
+    primaryShadow: '#D5A43D',
+    primaryHighlight: '#FFF3C8',
+    secondary: '#49C9D7',
+    secondaryHover: '#5FD3DF',
+    secondaryPressed: '#33B4C2',
+    secondaryBorder: '#A8EDF1',
+    secondaryShadow: '#269AAA',
+    secondaryHighlight: '#C9F6F7',
+    utilityDark: '#6960B8',
+    utilityDarkHover: '#776EC4',
+    utilityDarkPressed: '#5A51A7',
+    utilityDarkBorder: '#A9A1DF',
+    utilityDarkShadow: '#4E478F',
+    utilityDarkHighlight: '#C6C0EC',
+    utilityLight: '#9284D2',
+    utilityLightHover: '#9F92DB',
+    utilityLightPressed: '#8072C4',
+    utilityLightBorder: '#C7BEEF',
+    utilityLightShadow: '#7064AE',
+    utilityLightHighlight: '#DDD7F7'
   },
   text: {
     primary: '#17133A',
-    onDark: '#FFF7E8',
+    onDark: '#FFFFFF',
     muted: '#B8C2CC',
-    accent: '#4EDDE8'
+    accent: '#49C9D7'
   },
   feedback: {
     success: '#74D99F',
@@ -48,7 +52,7 @@ const colors = {
   },
   border: {
     subtle: '#4D4288',
-    focus: '#4EDDE8',
+    focus: '#49C9D7',
     cream: '#FFF0B8'
   },
   shadow: {
@@ -66,28 +70,28 @@ export const uiTokens = {
   colors,
   typography: {
     display: {
-      family: 'Fredoka, sans-serif',
+      family: 'Poppins, sans-serif',
       weight: '700',
       xl: 52,
       lg: 40
     },
     heading: {
-      family: 'Fredoka, sans-serif',
+      family: 'Poppins, sans-serif',
       weight: '700',
       size: 30
     },
     button: {
-      family: 'Fredoka, sans-serif',
-      weight: '600',
-      size: 26
+      family: 'Poppins, sans-serif',
+      weight: '700',
+      size: 24
     },
     body: {
-      family: 'Nunito Sans, sans-serif',
+      family: 'Poppins, sans-serif',
       weight: '400',
       size: 20
     },
     small: {
-      family: 'Nunito Sans, sans-serif',
+      family: 'Poppins, sans-serif',
       weight: '400',
       size: 15
     }
@@ -125,6 +129,7 @@ export const uiTokens = {
     scale: {
       normal: 1,
       hover: 1.025,
+      menuHover: 1.02,
       pressed: 0.97
     }
   },
@@ -144,16 +149,22 @@ export const uiTokens = {
     }
   },
   button: {
-    width: 360,
-    height: 72,
+    width: 340,
+    height: 64,
     radius: 28,
-    verticalGap: 16,
-    borderWidth: 3,
-    borderAlpha: 0.72,
-    shadowOffset: 6,
-    shadowPressedOffset: 3,
+    verticalGap: 14,
+    innerPaddingHorizontal: 24,
+    borderWidth: 2,
+    borderAlpha: 0.82,
+    shadowOffset: 4,
+    shadowPressedOffset: 2,
     pressedYOffset: 2,
-    highlightHeight: 10,
+    highlightHeight: 8,
+    textShadow: {
+      color: 'rgba(11, 14, 38, 0.28)',
+      blur: 2,
+      offsetY: 1
+    },
     variants: {
       primary: {
         body: colors.action.primary,
@@ -161,7 +172,8 @@ export const uiTokens = {
         pressed: colors.action.primaryPressed,
         border: colors.action.primaryBorder,
         shadow: colors.action.primaryShadow,
-        text: colors.text.primary
+        highlight: colors.action.primaryHighlight,
+        text: colors.text.onDark
       },
       secondary: {
         body: colors.action.secondary,
@@ -169,7 +181,8 @@ export const uiTokens = {
         pressed: colors.action.secondaryPressed,
         border: colors.action.secondaryBorder,
         shadow: colors.action.secondaryShadow,
-        text: colors.text.primary
+        highlight: colors.action.secondaryHighlight,
+        text: colors.text.onDark
       },
       utilityDark: {
         body: colors.action.utilityDark,
@@ -177,6 +190,7 @@ export const uiTokens = {
         pressed: colors.action.utilityDarkPressed,
         border: colors.action.utilityDarkBorder,
         shadow: colors.action.utilityDarkShadow,
+        highlight: colors.action.utilityDarkHighlight,
         text: colors.text.onDark
       },
       utilityLight: {
@@ -185,6 +199,7 @@ export const uiTokens = {
         pressed: colors.action.utilityLightPressed,
         border: colors.action.utilityLightBorder,
         shadow: colors.action.utilityLightShadow,
+        highlight: colors.action.utilityLightHighlight,
         text: colors.text.onDark
       }
     }

@@ -28,17 +28,21 @@ La paleta usa nombres semanticos, no nombres numerados. Reutiliza estos grupos a
 
 ## Tipografia
 
-Maximo dos familias:
+Familia oficial unica:
 
-- Display y botones: Fredoka SemiBold/Bold.
-- Body y dialogos: Nunito Sans Regular/SemiBold.
+- Primary family: Poppins.
+- Buttons: Poppins Bold 700.
+- Headings: Poppins Bold 700.
+- Body: Poppins Regular 400.
+- Medium: Poppins Medium 500.
+- Semibold: Poppins SemiBold 600.
 
 Escala base para `1280x720`:
 
 - Display XL: 52 px, Bold.
 - Display L: 40 px, Bold.
 - Heading: 30 px, SemiBold/Bold.
-- Button: 26 px, SemiBold.
+- Button: 24 px, Bold.
 - Body: 20 px, Regular/SemiBold.
 - Small: 15 px, Regular.
 
@@ -79,15 +83,29 @@ Easing recomendado: `Sine.easeOut`. Evitar vibraciones, destellos rapidos y movi
 
 Boton oficial de menu y acciones principales:
 
-- Width: 360 px.
-- Height: 72 px.
+- Width: 340 px.
+- Height: 64 px.
 - Radius: 28 px.
-- Vertical gap: 16 px.
-- Text: Fredoka SemiBold, 26 px, mayusculas.
+- Vertical gap: 14 px.
+- Inner padding horizontal: 24 px.
+- Text: Poppins Bold 700, 24 px, mayusculas, `#FFFFFF`.
 - Construccion: `Container` con `shadow`, `body`, `highlight`, `label`.
 - Sin PNG de boton.
 - Sin texto en imagen.
-- Sin iconos en v1.
+- Sin iconos.
+
+Paleta oficial del Main Menu:
+
+- `primary`: body `#F4C75E`, shadow `#D5A43D`, border `#FFE5A3`, highlight `#FFF3C8`, text `#FFFFFF`.
+- `secondary`: body `#49C9D7`, shadow `#269AAA`, border `#A8EDF1`, highlight `#C9F6F7`, text `#FFFFFF`.
+- `utilityDark`: body `#6960B8`, shadow `#4E478F`, border `#A9A1DF`, highlight `#C6C0EC`, text `#FFFFFF`.
+- `utilityLight`: body `#9284D2`, shadow `#7064AE`, border `#C7BEEF`, highlight `#DDD7F7`, text `#FFFFFF`.
+
+Borde: 2 px, claro, suave y cromaticamente ligado a la variante.
+
+Sombra/extrusion: offset inferior 4 px, usando el shadow semantico de cada variante. No usar sombra negra fuerte.
+
+Highlight: capsule superior delgada dentro del boton, alpha bajo. No debe dominar visualmente.
 
 Variantes:
 
@@ -99,7 +117,7 @@ Variantes:
 Estados:
 
 - Normal: escala `1`.
-- Hover: escala `1.025`, color levemente mas luminoso.
+- Hover: escala `1.02`, color levemente mas luminoso.
 - Pressed: escala `0.97`, `y + 2 px`, extrusion menor.
 - Pointer out: regresar exactamente a normal.
 

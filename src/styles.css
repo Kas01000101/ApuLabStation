@@ -13,8 +13,8 @@
   --accent-coral-hover: #FF8585;
   --text-light: #F8F9FA;
   --text-muted: #B8C2CC;
-  --font-main: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Fredoka', sans-serif;
+  --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Poppins', sans-serif;
 }
 
 * {

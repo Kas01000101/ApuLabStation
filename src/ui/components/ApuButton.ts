@@ -49,6 +49,14 @@ export class ApuButton extends Phaser.GameObjects.Container {
       color: variantTokens[this.options.variant].text,
       align: 'center'
     }).setOrigin(0.5);
+    this.labelText.setShadow(
+      0,
+      uiTokens.button.textShadow.offsetY,
+      uiTokens.button.textShadow.color,
+      uiTokens.button.textShadow.blur,
+      false,
+      true
+    );
 
     this.hitArea = scene.add.zone(0, 0, this.options.width, this.options.height)
       .setInteractive({ useHandCursor: true });
@@ -65,7 +73,7 @@ export class ApuButton extends Phaser.GameObjects.Container {
     this.hitArea.on('pointerover', () => {
       this.isPointerOver = true;
       this.renderState('hover');
-      this.animateTo(uiTokens.motion.scale.hover, 0);
+      this.animateTo(uiTokens.motion.scale.menuHover, 0);
     });
 
     this.hitArea.on('pointerout', () => {
@@ -82,7 +90,7 @@ export class ApuButton extends Phaser.GameObjects.Container {
     this.hitArea.on('pointerup', () => {
       const nextState: ButtonState = this.isPointerOver ? 'hover' : 'normal';
       this.renderState(nextState);
-      this.animateTo(this.isPointerOver ? uiTokens.motion.scale.hover : uiTokens.motion.scale.normal, 0);
+      this.animateTo(this.isPointerOver ? uiTokens.motion.scale.menuHover : uiTokens.motion.scale.normal, 0);
       this.options.onClick();
     });
   }
@@ -117,11 +125,11 @@ export class ApuButton extends Phaser.GameObjects.Container {
     this.bodyLayer.strokeRoundedRect(-width / 2, -height / 2, width, height, radius);
 
     this.highlightLayer.clear();
-    this.highlightLayer.fillStyle(toColor(uiTokens.colors.highlight.soft), state === 'pressed' ? 0.08 : 0.18);
+    this.highlightLayer.fillStyle(toColor(variant.highlight), state === 'pressed' ? 0.1 : 0.3);
     this.highlightLayer.fillRoundedRect(
-      -width / 2 + uiTokens.spacing.md,
+      -width / 2 + uiTokens.button.innerPaddingHorizontal,
       -height / 2 + uiTokens.spacing.sm,
-      width - uiTokens.spacing.md * 2,
+      width - uiTokens.button.innerPaddingHorizontal * 2,
       uiTokens.button.highlightHeight,
       uiTokens.radius.medium
     );
