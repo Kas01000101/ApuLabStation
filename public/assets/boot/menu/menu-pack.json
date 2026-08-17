@@ -1,5 +1,24 @@
 {
-  "menu": {
-    "files": []
-  }
+    "section1": {
+        "files": [
+            {
+                "url": "assets/boot/menu/menu_background.png",
+                "type": "image",
+                "key": "menu_background"
+            },
+            {
+                "url": "assets/boot/menu/hopper_menu.png",
+                "type": "image",
+                "key": "hopper_menu"
+            }
+        ]
+    },
+    "meta": {
+        "app": "Phaser Editor 2D - Asset Pack Editor",
+        "contentType": "phasereditor2d.pack.core.AssetContentType",
+        "url": "https://phasereditor2d.com",
+        "version": 2,
+        "showAllFilesInBlocks": false,
+        "visible": true
+    }
 }
