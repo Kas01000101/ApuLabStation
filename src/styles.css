@@ -71,6 +71,16 @@ body, html {
   animation: fadeIn 0.3s ease-out;
 }
 
+.apulab-overlay--mission {
+  background: var(--access-backdrop);
+  backdrop-filter: blur(5px);
+  animation: accessBackdropIn 180ms ease-out both;
+}
+
+.apulab-overlay--closing {
+  animation: accessBackdropOut 140ms ease-in both;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.98); }
   to { opacity: 1; transform: scale(1); }
@@ -85,6 +95,223 @@ body, html {
   max-width: 640px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-teal-glow);
   text-align: center;
+}
+
+.apulab-access-shell {
+  position: relative;
+  width: min(90vw, var(--access-width));
+  min-height: var(--access-min-height);
+  padding: 70px 34px 28px;
+  border-radius: var(--access-radius);
+  background:
+    linear-gradient(180deg, var(--access-body-highlight) 0%, var(--access-body) 42%, #EDE5FF 100%);
+  border: 10px solid var(--access-outer-frame);
+  box-shadow:
+    0 11px 0 var(--access-shadow),
+    0 22px 34px rgba(42, 33, 84, 0.28);
+  outline: 4px solid var(--access-inner-border);
+  outline-offset: -15px;
+  text-align: center;
+  animation: accessModalIn 190ms ease-out both;
+}
+
+.apulab-overlay--closing .apulab-access-shell {
+  animation: accessModalOut 140ms ease-in both;
+}
+
+.apulab-access-header {
+  position: absolute;
+  top: -38px;
+  left: 50%;
+  width: 315px;
+  height: 68px;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--access-header-highlight) 0%, var(--access-header-body) 42%, #5C52A8 100%);
+  border: 4px solid var(--access-header-border);
+  box-shadow: 0 7px 0 var(--access-shadow), inset 0 8px 0 rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  font-family: var(--access-font-family);
+  font-size: var(--access-title-size);
+  font-weight: var(--access-title-weight);
+  line-height: 1;
+}
+
+.apulab-access-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: var(--access-close-size);
+  height: var(--access-close-size);
+  border-radius: 999px;
+  border: 3px solid var(--access-header-border);
+  background: linear-gradient(180deg, var(--access-header-highlight) 0%, var(--access-header-body) 100%);
+  color: #FFFFFF;
+  font-family: var(--access-font-family);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--access-shadow);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.apulab-access-close:hover {
+  transform: scale(1.04);
+}
+
+.apulab-access-close:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 0 var(--access-shadow);
+}
+
+.apulab-access-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.apulab-access-label {
+  width: min(100%, var(--access-input-width));
+  margin: 0 0 8px;
+  color: var(--access-input-text);
+  font-family: var(--access-font-family);
+  font-size: var(--access-label-size);
+  font-weight: var(--access-label-weight);
+  text-align: left;
+}
+
+.apulab-access-input {
+  width: min(100%, var(--access-input-width));
+  height: var(--access-input-height);
+  margin: 0 0 20px;
+  padding: 0 18px;
+  border-radius: var(--access-input-radius);
+  border: 3px solid var(--access-input-border);
+  background: var(--access-input-bg);
+  color: var(--access-input-text);
+  font-family: var(--access-font-family);
+  font-size: var(--access-input-font-size);
+  font-weight: var(--access-input-font-weight);
+  outline: none;
+  box-shadow: inset 0 3px 0 rgba(78, 67, 125, 0.08), 0 4px 0 rgba(112, 100, 174, 0.12);
+}
+
+.apulab-access-input::placeholder {
+  color: var(--access-input-placeholder);
+}
+
+.apulab-access-input:focus {
+  border-color: var(--access-input-focus);
+  box-shadow: inset 0 3px 0 rgba(78, 67, 125, 0.08), 0 0 0 4px rgba(73, 201, 215, 0.18);
+}
+
+.apulab-access-error {
+  min-height: 22px;
+  margin: -6px 0 8px;
+  color: var(--accent-coral);
+  font-family: var(--access-font-family);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.apulab-access-button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999px;
+  border: 3px solid;
+  color: #FFFFFF;
+  font-family: var(--access-font-family);
+  font-weight: var(--access-button-font-weight);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  text-shadow: 0 1px 2px rgba(48, 42, 82, 0.25);
+}
+
+.apulab-access-button::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 44px;
+  right: 44px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+.apulab-access-button:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.apulab-access-button:active {
+  transform: translateY(3px) scale(0.97);
+}
+
+.apulab-access-button--primary {
+  width: min(100%, var(--access-primary-width));
+  height: var(--access-primary-height);
+  background: linear-gradient(180deg, var(--access-primary-highlight) 0%, var(--access-primary-body) 48%, #E0AD43 100%);
+  border-color: var(--access-primary-border);
+  box-shadow: 0 6px 0 var(--access-primary-shadow), 0 12px 18px rgba(78, 67, 125, 0.2);
+  font-size: var(--access-button-font-size);
+}
+
+.apulab-access-button--primary:hover {
+  background: linear-gradient(180deg, var(--access-primary-highlight) 0%, var(--access-primary-hover) 50%, var(--access-primary-body) 100%);
+}
+
+.apulab-access-button--primary:active {
+  box-shadow: 0 3px 0 var(--access-primary-shadow), 0 8px 14px rgba(78, 67, 125, 0.18);
+}
+
+.apulab-access-demo-copy {
+  margin: 18px 0 9px;
+  color: var(--access-input-text);
+  font-family: var(--access-font-family);
+  font-size: var(--access-support-size);
+  font-weight: var(--access-support-weight);
+}
+
+.apulab-access-button--demo {
+  width: min(100%, var(--access-demo-width));
+  height: var(--access-demo-height);
+  background: linear-gradient(180deg, var(--access-demo-highlight) 0%, var(--access-demo-body) 50%, #7D70C6 100%);
+  border-color: var(--access-demo-border);
+  box-shadow: 0 5px 0 var(--access-demo-shadow), 0 10px 14px rgba(78, 67, 125, 0.16);
+  font-size: 18px;
+}
+
+.apulab-access-button--demo:hover {
+  background: linear-gradient(180deg, var(--access-demo-highlight) 0%, var(--access-demo-hover) 50%, var(--access-demo-body) 100%);
+}
+
+.apulab-access-button--demo:active {
+  box-shadow: 0 2px 0 var(--access-demo-shadow), 0 7px 12px rgba(78, 67, 125, 0.15);
+}
+
+@keyframes accessBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes accessBackdropOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes accessModalIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes accessModalOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.97); }
 }
 
 .apulab-action-stack {

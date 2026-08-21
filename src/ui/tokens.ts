@@ -55,6 +55,13 @@ const colors = {
     focus: '#49C9D7',
     cream: '#FFF0B8'
   },
+  input: {
+    background: '#FFFDFB',
+    border: '#C7BEEF',
+    focusBorder: '#49C9D7',
+    text: '#302A52',
+    placeholder: '#8F86A8'
+  },
   shadow: {
     soft: 'rgba(11, 14, 38, 0.22)',
     medium: 'rgba(11, 14, 38, 0.35)',
@@ -66,32 +73,77 @@ const colors = {
   }
 } as const;
 
+const typographyFamily = {
+  // TODO(APULAB-FUTURE:POPPINS-ROUNDED)
+  // Replace Poppins with the real Poppins Rounded family only when a legal font asset/package is available.
+  // See docs/FUTURE_IMPLEMENTATION.md#poppins-rounded
+  primary: 'Poppins, sans-serif'
+} as const;
+
 export const uiTokens = {
   colors,
   typography: {
+    family: typographyFamily,
+    weight: {
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700'
+    },
     display: {
-      family: 'Poppins, sans-serif',
+      family: typographyFamily.primary,
       weight: '700',
       xl: 52,
       lg: 40
     },
     heading: {
-      family: 'Poppins, sans-serif',
+      family: typographyFamily.primary,
       weight: '700',
       size: 30
     },
     button: {
-      family: 'Poppins, sans-serif',
+      family: typographyFamily.primary,
+      weight: '600',
+      size: 21
+    },
+    menuButton: {
+      family: typographyFamily.primary,
       weight: '700',
       size: 24
     },
+    modalTitle: {
+      family: typographyFamily.primary,
+      weight: '700',
+      size: 30
+    },
+    label: {
+      family: typographyFamily.primary,
+      weight: '600',
+      size: 17
+    },
+    input: {
+      family: typographyFamily.primary,
+      weight: '400',
+      size: 18
+    },
+    support: {
+      family: typographyFamily.primary,
+      weight: '400',
+      size: 15
+    },
+    narrative: {
+      family: typographyFamily.primary,
+      weight: '500',
+      size: 20,
+      style: 'italic'
+    },
     body: {
-      family: 'Poppins, sans-serif',
+      family: typographyFamily.primary,
       weight: '400',
       size: 20
     },
     small: {
-      family: 'Poppins, sans-serif',
+      family: typographyFamily.primary,
       weight: '400',
       size: 15
     }
@@ -203,6 +255,28 @@ export const uiTokens = {
         text: colors.text.onDark
       }
     }
+  },
+  accessModal: {
+    width: 490,
+    minHeight: 410,
+    radius: 32,
+    body: '#F4EEFF',
+    bodyHighlight: '#FFFDFB',
+    outerFrame: '#8E7DCE',
+    innerBorder: '#EEE7FF',
+    shadow: '#4E478F',
+    headerBody: '#6960B8',
+    headerBorder: '#C7BEEF',
+    headerHighlight: '#DDD7F7',
+    backdrop: 'rgba(30, 23, 62, 0.32)',
+    inputWidth: 360,
+    inputHeight: 54,
+    inputRadius: 18,
+    primaryButtonWidth: 320,
+    primaryButtonHeight: 60,
+    demoButtonWidth: 238,
+    demoButtonHeight: 54,
+    closeButtonSize: 42
   }
 } as const;
 

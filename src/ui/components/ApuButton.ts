@@ -43,9 +43,9 @@ export class ApuButton extends Phaser.GameObjects.Container {
     this.bodyLayer = scene.add.graphics();
     this.highlightLayer = scene.add.graphics();
     this.labelText = scene.add.text(0, 0, options.label.toUpperCase(), {
-      fontFamily: uiTokens.typography.button.family,
-      fontSize: `${uiTokens.typography.button.size}px`,
-      fontStyle: uiTokens.typography.button.weight,
+      fontFamily: uiTokens.typography.menuButton.family,
+      fontSize: `${uiTokens.typography.menuButton.size}px`,
+      fontStyle: uiTokens.typography.menuButton.weight,
       color: variantTokens[this.options.variant].text,
       align: 'center'
     }).setOrigin(0.5);

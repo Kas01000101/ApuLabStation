@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { POSTTEST_QUESTIONS } from '../../data/posttestQuestions';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
+import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
 
 export class PosttestScene extends Phaser.Scene {
@@ -83,7 +84,8 @@ export class PosttestScene extends Phaser.Scene {
       duration_seconds: durationSeconds
     };
 
-    GameState.getInstance().addPosttestAnswer(responseData);
+    const gameState = GameState.getInstance();
+    gameState.addPosttestAnswer(responseData);
 
     TelemetryService.getInstance().recordEvent({
       sceneId: 'PosttestScene',
@@ -91,6 +93,24 @@ export class PosttestScene extends Phaser.Scene {
       payload: responseData,
       durationSeconds
     });
+
+    const repository = getResearchRepository();
+    if (repository.mode === 'mock' || gameState.participantId) {
+      // TODO(APULAB-FUTURE:POST-PERSISTENCE)
+      // Keep scene-level POST calls repository-only; replace mock persistence before real study launch.
+      // See docs/FUTURE_IMPLEMENTATION.md#real-post-storage-in-research
+      repository.savePosttestResponse({
+        participant_id: gameState.participantId ?? 'development-demo-participant',
+        session_id: gameState.sessionId,
+        questionnaire_version: 'posttest-v1',
+        question_id: itemId,
+        answer: {
+          option_id: selectedValue,
+          duration_seconds: durationSeconds
+        },
+        answered_at: new Date().toISOString()
+      });
+    }
 
     this.currentQuestionIndex++;
     this.renderQuestion();

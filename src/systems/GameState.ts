@@ -20,6 +20,7 @@ export interface ChallengeResult {
 
 interface PersistedGameState {
   session_id: string;
+  participant_id?: string | null;
   participant_code: string | null;
   session_mode: SessionMode;
   current_scene: string;
@@ -42,6 +43,7 @@ export class GameState {
   private static instance: GameState;
 
   public participantCode: string | null = null;
+  public participantId: string | null = null;
   public sessionMode: SessionMode = 'demo';
   public sessionId: string = '';
   public readonly buildVersion: string = BUILD_VERSION;
@@ -86,11 +88,12 @@ export class GameState {
     }
   }
 
-  public startNewSession(mode: SessionMode, participantCode: string | null): void {
+  public startNewSession(mode: SessionMode, participantCode: string | null, participantId: string | null = null): void {
     this.resetRuntimeMetadata();
     this.sessionId = this.generateUUID();
     this.sessionMode = mode;
     this.participantCode = mode === 'study' ? this.normalizeParticipantCode(participantCode || '') : null;
+    this.participantId = mode === 'study' ? participantId : null;
     this.currentScene = 'OpportunityIntroScene';
     this.currentLevel = 0;
     this.currentChallenge = 'INTRO_STORY';
@@ -110,6 +113,7 @@ export class GameState {
   public setDemoMode(): void {
     this.sessionMode = 'demo';
     this.participantCode = null;
+    this.participantId = null;
     this.persistSessionState();
   }
 
@@ -154,6 +158,7 @@ export class GameState {
       if (!state.session_id) return false;
 
       this.sessionId = state.session_id;
+      this.participantId = state.participant_id ?? null;
       this.participantCode = state.participant_code ?? null;
       this.sessionMode = state.session_mode ?? (this.participantCode ? 'study' : 'demo');
       this.currentScene = this.normalizeSceneKey(state.current_scene || 'OpportunityIntroScene');
@@ -178,6 +183,7 @@ export class GameState {
   public getSessionData(): SessionData {
     return {
       session_id: this.sessionId,
+      participant_id: this.participantId,
       participant_code: this.participantCode,
       session_mode: this.sessionMode,
       build_version: this.buildVersion,
@@ -196,6 +202,7 @@ export class GameState {
       this.lastSavedAt = new Date().toISOString();
       const stateObj: PersistedGameState = {
         session_id: this.sessionId,
+        participant_id: this.participantId,
         participant_code: this.participantCode,
         session_mode: this.sessionMode,
         current_scene: this.currentScene,

@@ -2,7 +2,7 @@ import * as Phaser from 'phaser';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { ExportService } from '../../systems/ExportService';
-import { AwsClient } from '../../systems/AwsClient';
+import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
 import { clearApuLabDom } from '../../ui/domComponents';
 
@@ -30,7 +30,7 @@ export class FinalScene extends Phaser.Scene {
       }
     });
 
-    AwsClient.finishSession(gameState.sessionId);
+    getResearchRepository().completeSession(gameState.sessionId, gameState.completedAt);
 
     this.renderSummaryDOM();
   }

@@ -10,6 +10,11 @@
                 "url": "assets/boot/menu/hopper_menu.png",
                 "type": "image",
                 "key": "hopper_menu"
+            },
+            {
+                "url": "assets/boot/menu/apulab_logo.png",
+                "type": "image",
+                "key": "apulab_logo"
             }
         ]
     },

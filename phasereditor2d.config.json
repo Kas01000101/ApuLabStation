@@ -1,3 +1,11 @@
 {
+    "plugins": [],
+    "scripts": [],
+    "skip": [
+        ".git",
+        "dist",
+        "node_modules"
+    ],
+    "playUrl": "http://127.0.0.1:3000",
     "settings": {}
 }

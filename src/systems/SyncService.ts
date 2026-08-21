@@ -1,24 +1,28 @@
 import { LocalQueueService } from './LocalQueueService';
-import { SupabaseClient } from './SupabaseClient';
 import { GameState } from './GameState';
 import { SyncStatus } from '../types/telemetry';
+import { getResearchRepository } from './research/ResearchRepositoryProvider';
 
 export class SyncService {
   private static isSyncing = false;
 
   public static async processQueue(): Promise<void> {
     if (SyncService.isSyncing) return;
-    if (!SupabaseClient.isConfigured()) return;
 
     SyncService.isSyncing = true;
 
     try {
-      // 1. Sync session state first if needed
+      const repository = getResearchRepository();
       const gameState = GameState.getInstance();
-      await SupabaseClient.ingestSession(gameState.getSessionData());
+      const sessionResult = await repository.createSession(gameState.getSessionData());
+      if (!sessionResult.success && repository.mode === 'supabase') {
+        console.warn('[SyncService] Session sync failed:', sessionResult.error);
+      }
 
-      // 2. Fetch pending events from localStorage
       const events = LocalQueueService.getEvents();
+      // TODO(APULAB-FUTURE:OFFLINE-SYNC)
+      // Add durable backoff, pagehide retry, and resume-after-network recovery before research validation.
+      // See docs/FUTURE_IMPLEMENTATION.md#offline-to-online-sync
       const pendingEvents = events.filter(e => e.sync_status === 'pending' || e.sync_status === 'failed');
 
       if (pendingEvents.length === 0) {
@@ -26,8 +30,7 @@ export class SyncService {
         return;
       }
 
-      // 3. Attempt batch sync to Supabase
-      const res = await SupabaseClient.ingestEvents(pendingEvents);
+      const res = await repository.saveEvents(pendingEvents);
 
       if (res.success) {
         // Mark all as synced
@@ -37,6 +40,7 @@ export class SyncService {
         LocalQueueService.addEvent({
           event_id: 'sync-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
           session_id: gameState.sessionId,
+          participant_id: gameState.participantId,
           participant_code: gameState.participantCode,
           session_mode: gameState.sessionMode,
           build_version: gameState.buildVersion,
@@ -44,8 +48,9 @@ export class SyncService {
           scene_id: gameState.currentScene,
           challenge_id: gameState.currentChallenge || null,
           event_type: 'sync_success',
-          payload: { count: pendingEvents.length },
+          payload: { count: pendingEvents.length, data_mode: repository.mode },
           timestamp: new Date().toISOString(),
+          client_timestamp: new Date().toISOString(),
           sync_status: 'synced'
         });
       } else {
@@ -56,6 +61,7 @@ export class SyncService {
         LocalQueueService.addEvent({
           event_id: 'sync-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
           session_id: gameState.sessionId,
+          participant_id: gameState.participantId,
           participant_code: gameState.participantCode,
           session_mode: gameState.sessionMode,
           build_version: gameState.buildVersion,
@@ -63,8 +69,9 @@ export class SyncService {
           scene_id: gameState.currentScene,
           challenge_id: gameState.currentChallenge || null,
           event_type: 'sync_failed',
-          payload: { count: pendingEvents.length, error: res.error },
+          payload: { count: pendingEvents.length, error: res.error, data_mode: repository.mode },
           timestamp: new Date().toISOString(),
+          client_timestamp: new Date().toISOString(),
           sync_status: 'failed'
         });
       }
@@ -76,6 +83,6 @@ export class SyncService {
   }
 
   public static determineInitialStatus(): SyncStatus {
-    return SupabaseClient.isConfigured() ? 'pending' : 'local_only';
+    return 'pending';
   }
 }

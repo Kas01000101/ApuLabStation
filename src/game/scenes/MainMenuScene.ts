@@ -1,13 +1,17 @@
 import * as Phaser from 'phaser';
 import mainMenuLayoutRaw from './MainMenuLayout.scene?raw';
 import { GameState } from '../../systems/GameState';
+import { TelemetryService } from '../../systems/TelemetryService';
+import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { ApuButton, type ApuButtonVariant } from '../../ui/components/ApuButton';
 import { uiTokens } from '../../ui/tokens';
 import { DialoguePanel } from '../components/DialoguePanel';
+import { AccessModal } from '../../ui/components/AccessModal';
 import { clearApuLabDom } from '../../ui/domComponents';
 
 interface EditorImageObject {
   type: 'Image';
+  label?: string;
   texture?: {
     key?: string;
   };
@@ -29,6 +33,9 @@ interface EditorSceneLayout {
 
 export class MainMenuScene extends Phaser.Scene {
   private creditsPanel?: DialoguePanel;
+  private accessModal?: AccessModal;
+  private layoutImagesByLabel = new Map<string, Phaser.GameObjects.Image>();
+  private logoShineEffects: Phaser.Types.Actions.AddEffectShineReturn[] = [];
 
   constructor() {
     super({ key: 'MainMenuScene' });
@@ -36,32 +43,14 @@ export class MainMenuScene extends Phaser.Scene {
 
   create() {
     clearApuLabDom();
-    const { width } = this.scale;
+    this.cleanupLogoShine();
+    this.layoutImagesByLabel.clear();
 
     this.createEditorLayout();
-
-    const panel = this.add.graphics();
-    panel.fillStyle(this.toColor(uiTokens.colors.surface.panel), 0.78);
-    panel.lineStyle(3, this.toColor(uiTokens.colors.border.subtle), 0.86);
-    panel.fillRoundedRect(width / 2 - 360, 60, 720, 190, uiTokens.radius.large);
-    panel.strokeRoundedRect(width / 2 - 360, 60, 720, 190, uiTokens.radius.large);
-
-    const titleText = this.add.text(width / 2, 115, 'APULAB STATION', {
-      fontFamily: uiTokens.typography.display.family,
-      fontSize: `${uiTokens.typography.display.xl}px`,
-      color: uiTokens.colors.text.accent,
-      fontStyle: uiTokens.typography.display.weight
-    }).setOrigin(0.5);
-
-    titleText.setShadow(0, 0, uiTokens.colors.text.accent, 10, true, true);
-
-    this.add.text(width / 2, 185, 'Explora, experimenta y crea tu misión.', {
-      fontFamily: uiTokens.typography.body.family,
-      fontSize: `${uiTokens.typography.body.size + 2}px`,
-      color: uiTokens.colors.text.onDark
-    }).setOrigin(0.5);
-
+    this.applyLogoShine();
     this.createMenuButtons();
+
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupLogoShine, this);
   }
 
   private createEditorLayout(): void {
@@ -80,7 +69,42 @@ export class MainMenuScene extends Phaser.Scene {
       if (typeof object.originX === 'number' || typeof object.originY === 'number') {
         image.setOrigin(object.originX ?? 0.5, object.originY ?? 0.5);
       }
+      if (object.label) {
+        this.layoutImagesByLabel.set(object.label, image);
+      }
     });
+  }
+
+  private applyLogoShine(): void {
+    const logo = this.layoutImagesByLabel.get('apulab_logo');
+    if (!logo || this.renderer.type !== Phaser.WEBGL) return;
+
+    try {
+      this.logoShineEffects = Phaser.Actions.AddEffectShine(logo, {
+        radius: 0.16,
+        direction: Math.PI * 0.18,
+        scale: 2,
+        duration: 1100,
+        repeatDelay: 3800,
+        yoyo: false,
+        ease: 'Sine.easeInOut',
+        colorFactor: [1.08, 1.16, 1.18, 1]
+      });
+    } catch (error) {
+      console.warn('[ApuLab] Logo shine effect unavailable; continuing with static logo.', error);
+      this.logoShineEffects = [];
+    }
+  }
+
+  private cleanupLogoShine(): void {
+    this.logoShineEffects.forEach((effect) => {
+      effect.tween?.destroy();
+      effect.dynamicTexture?.destroy();
+      effect.parallelFilters?.destroy();
+      effect.blendFilter?.destroy();
+      effect.gradient?.destroy();
+    });
+    this.logoShineEffects = [];
   }
 
   private createMenuButtons(): void {
@@ -98,10 +122,7 @@ export class MainMenuScene extends Phaser.Scene {
       {
         label: 'INICIAR MISIÓN',
         variant: 'primary',
-        onClick: () => {
-          clearApuLabDom();
-          this.scene.start('ParticipantCodeScene');
-        }
+        onClick: () => this.showMissionStartModal()
       }
     ];
 
@@ -149,10 +170,6 @@ export class MainMenuScene extends Phaser.Scene {
     });
   }
 
-  private toColor(value: string): number {
-    return Phaser.Display.Color.HexStringToColor(value).color;
-  }
-
   private showCreditsModal(): void {
     this.creditsPanel?.destroy();
     this.creditsPanel = new DialoguePanel(this, {
@@ -163,5 +180,65 @@ export class MainMenuScene extends Phaser.Scene {
         this.creditsPanel = undefined;
       }
     });
+  }
+
+  private showMissionStartModal(): void {
+    if (this.accessModal) return;
+
+    this.accessModal = new AccessModal({
+      onStudySubmit: (code, credential) => this.startSessionFromModal('study', code, credential),
+      onDemoSubmit: () => this.startSessionFromModal('demo', '', ''),
+      onClose: () => {
+        this.accessModal = undefined;
+      }
+    });
+  }
+
+  private async startSessionFromModal(
+    mode: 'study' | 'demo',
+    rawCode: string,
+    credential: string
+  ): Promise<boolean> {
+    const repository = getResearchRepository();
+
+    if (mode === 'study' && repository.mode === 'mock') {
+      this.accessModal?.setError('El modo de investigación no está activo en este entorno. Usa DEMO para desarrollo.');
+      return false;
+    }
+
+    if (mode === 'study' && (!rawCode || !credential)) {
+      this.accessModal?.setError('Completa código y contraseña del estudio.');
+      return false;
+    }
+
+    const auth = mode === 'study'
+      ? await repository.authenticateParticipant({ participantCode: rawCode, credential })
+      : null;
+
+    if (mode === 'study' && (!auth?.success || !auth.data)) {
+      this.accessModal?.setError('El código o la contraseña no son correctos.');
+      return false;
+    }
+
+    const gameState = GameState.getInstance();
+    gameState.startNewSession(mode, mode === 'study' ? rawCode : null, auth?.data?.participant_id ?? null);
+    const sessionResult = await repository.createSession(gameState.getSessionData());
+    if (!sessionResult.success) {
+      this.accessModal?.setError(mode === 'study' ? 'No se pudo iniciar la sesión de estudio.' : 'No se pudo iniciar la sesión demo.');
+      return false;
+    }
+
+    TelemetryService.getInstance().recordEvent({
+      sceneId: 'MainMenuScene',
+      eventType: 'session_started',
+      payload: {
+        session_id: gameState.sessionId,
+        session_mode: gameState.sessionMode
+      }
+    });
+
+    clearApuLabDom();
+    this.scene.start('OpportunityIntroScene');
+    return true;
   }
 }

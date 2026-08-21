@@ -37,6 +37,16 @@ Familia oficial unica:
 - Medium: Poppins Medium 500.
 - Semibold: Poppins SemiBold 600.
 
+Current implemented font:
+
+- `Poppins` via `@fontsource/poppins`.
+- Loaded weights: 400, 500, 600, 700.
+
+Target visual font:
+
+- Poppins Rounded.
+- Status: future / pending asset. Do not use `"Poppins Rounded"` in CSS until the real legal font family/package is present in the project.
+
 Escala base para `1280x720`:
 
 - Display XL: 52 px, Bold.
@@ -45,6 +55,12 @@ Escala base para `1280x720`:
 - Button: 24 px, Bold.
 - Body: 20 px, Regular/SemiBold.
 - Small: 15 px, Regular.
+- Modal title: 30 px, Bold 700.
+- Modal labels: 17 px, SemiBold 600.
+- Modal inputs/body: 18 px, Regular 400.
+- Modal action buttons: 21 px, SemiBold 600.
+- Modal support copy: 15 px, Regular 400.
+- Future narrative/dialogue emphasis: Medium Italic 500.
 
 Los botones no usan cursiva. La cursiva se reserva para narrativa o enfasis de dialogo.
 
@@ -120,6 +136,116 @@ Estados:
 - Hover: escala `1.02`, color levemente mas luminoso.
 - Pressed: escala `0.97`, `y + 2 px`, extrusion menor.
 - Pointer out: regresar exactamente a normal.
+
+## Access Modal
+
+Modal oficial para `INICIAR MISION` desde el Main Menu.
+
+Visual language:
+
+- Casual-game layered modal.
+- No formulario SaaS.
+- Construccion por capas: backdrop, extrusion, outer frame, inner border, light body, header plate, content, buttons.
+
+Backdrop:
+
+- Fondo del Main Menu visible: `menu_background`, `hopper_menu`, `apulab_logo`.
+- Blur suave: `5px`.
+- Dim violeta/neutral: `rgba(30, 23, 62, 0.32)`.
+- No reemplazar el fondo por pantalla azul/navy completa.
+
+Body:
+
+- Width: `490px`.
+- Min height: `410px`.
+- Radius: `32px`.
+- Body: `#F4EEFF`.
+- Body highlight: `#FFFDFB`.
+- Outer frame: `#8E7DCE`.
+- Inner border: `#EEE7FF`.
+- Shadow / extrusion: `#4E478F`, offset visual inferior `11px`.
+
+Header:
+
+- Plate superior en forma de capsule, sobresale del body.
+- Width: `315px`.
+- Height: `68px`.
+- Body: `#6960B8`.
+- Border: `#C7BEEF`.
+- Highlight: `#DDD7F7`.
+- Text: `#FFFFFF`.
+- Size: `30px`.
+- Weight: `700`.
+
+Typography:
+
+- Font target futuro: Poppins Rounded.
+- Estado actual: Poppins normal mediante `@fontsource/poppins`.
+- Pesos cargados para el modal: 400, 500, 600, 700.
+- Titulo: Bold 700, `30px`, blanco, sin tracking agresivo.
+- Labels: SemiBold 600, `17px`, violeta profundo.
+- Inputs y placeholders: Regular 400, `18px`.
+- Botones: SemiBold 600.
+- Texto de soporte: Regular 400, `15px`.
+- Narrativa futura: Medium Italic 500.
+- No fingir disponibilidad de Poppins Rounded si no esta instalada.
+
+Inputs:
+
+- Width: `360px`.
+- Height: `54px`.
+- Radius: `18px`.
+- Background: `#FFFDFB`.
+- Text: `#302A52`.
+- Placeholder: `#8F86A8`.
+- Border: `#C7BEEF`.
+- Focus border: `#49C9D7`.
+- Labels: deep violet, semibold, `17px`, alineadas a izquierda.
+
+Primary action:
+
+- Text: `Continuar`.
+- Width: `320px`.
+- Height: `60px`.
+- Body: `#F4C75E`.
+- Highlight: `#FFF3C8`.
+- Border: `#FFE5A3`.
+- Shadow: `#D5A43D`.
+- Text: `#FFFFFF`.
+
+Demo action:
+
+- Text helper: `¿No tienes credenciales?`.
+- Text: `Modo demo`.
+- Width: `238px`.
+- Height: `54px`.
+- Body: `#9284D2`.
+- Highlight: `#DDD7F7`.
+- Border: `#C7BEEF`.
+- Shadow: `#7064AE`.
+- Text: `#FFFFFF`.
+- No usar rojo para DEMO.
+
+Close button:
+
+- Size: `42px`.
+- Round capsule.
+- Body/header lavender-purple.
+- Text: `#FFFFFF`.
+- Hover scale: `1.04`.
+- Pressed scale: `0.95`.
+
+Motion:
+
+- Entry: backdrop fade, modal `opacity 0 -> 1`, `scale 0.96 -> 1`, `190ms`.
+- Exit: modal `scale 1 -> 0.97`, `opacity 1 -> 0`, `140ms`; backdrop fade out.
+
+Responsabilidades:
+
+- `MainMenuLayout.scene`: arte del menu.
+- `MainMenuScene.ts`: abrir/cerrar modal y flujo.
+- `AccessModal.ts`: estructura DOM visual e interaccion del modal.
+- Repository: mock/futuro backend.
 
 ## Responsabilidades
 

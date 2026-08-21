@@ -24,9 +24,15 @@ class MainMenuLayout extends Phaser.Scene {
 		menu_background.scaleY = 0.766;
 
 		// hopper_menu
-		const hopper_menu = this.add.image(160, 405, "hopper_menu");
-		hopper_menu.scaleX = 0.39;
-		hopper_menu.scaleY = 0.39;
+		const hopper_menu = this.add.image(151, 462, "hopper_menu");
+		hopper_menu.scaleX = 0.32367022000844076;
+		hopper_menu.scaleY = 0.3344717508884089;
+
+		// apulab_logo
+		const apulab_logo = this.add.image(668, 127, "apulab_logo");
+		apulab_logo.scaleX = 0.3315021662386533;
+		apulab_logo.scaleY = 0.3209696430208045;
+		apulab_logo.setOrigin(0.5635063677026548, 0.4810183274524026);
 
 		this.events.emit("scene-awake");
 	}

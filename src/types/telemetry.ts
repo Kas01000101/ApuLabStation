@@ -26,6 +26,7 @@ export type EventType =
 export interface TelemetryEvent {
   event_id: string;
   session_id: string;
+  participant_id?: string | null;
   participant_code: string | null;
   session_mode: SessionMode;
   build_version: string;
@@ -40,11 +41,13 @@ export interface TelemetryEvent {
   hint_used?: boolean;
   duration_seconds?: number;
   timestamp: string;
+  client_timestamp?: string;
   sync_status: SyncStatus;
 }
 
 export interface SessionData {
   session_id: string;
+  participant_id?: string | null;
   participant_code: string | null;
   session_mode: SessionMode;
   build_version: string;

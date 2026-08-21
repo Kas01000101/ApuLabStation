@@ -28,10 +28,24 @@
             "texture": {
                 "key": "hopper_menu"
             },
-            "x": 160,
-            "y": 405,
-            "scaleX": 0.39,
-            "scaleY": 0.39
+            "x": 151,
+            "y": 462,
+            "scaleX": 0.32367022000844076,
+            "scaleY": 0.3344717508884089
+        },
+        {
+            "type": "Image",
+            "id": "f8b1099e-d6ff-481a-8f14-67551b1b27e1",
+            "label": "apulab_logo",
+            "texture": {
+                "key": "apulab_logo"
+            },
+            "x": 668,
+            "y": 127,
+            "scaleX": 0.3315021662386533,
+            "scaleY": 0.3209696430208045,
+            "originX": 0.5635063677026548,
+            "originY": 0.4810183274524026
         }
     ],
     "plainObjects": [],

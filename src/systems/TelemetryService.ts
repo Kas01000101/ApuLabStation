@@ -33,6 +33,7 @@ export class TelemetryService {
     const event: TelemetryEvent = {
       event_id: eventId,
       session_id: gameState.sessionId,
+      participant_id: gameState.participantId,
       participant_code: gameState.participantCode,
       session_mode: gameState.sessionMode,
       build_version: gameState.buildVersion,
@@ -47,6 +48,7 @@ export class TelemetryService {
       hint_used: opts.hintUsed || false,
       duration_seconds: opts.durationSeconds,
       timestamp: new Date().toISOString(),
+      client_timestamp: new Date().toISOString(),
       sync_status: syncStatus
     };
 
