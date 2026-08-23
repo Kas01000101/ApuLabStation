@@ -1,0 +1,58 @@
+{
+    "id": "2d301a7f-b2a3-46c3-8f04-8f5324511597",
+    "sceneType": "SCENE",
+    "settings": {
+        "snapWidth": 1280,
+        "snapHeight": 720,
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "MainMenuLayout"
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "9ef4ea54-f3a3-49d7-a7a1-090771c10f72",
+            "label": "menu_background",
+            "texture": {
+                "key": "menu_background"
+            },
+            "x": 635,
+            "y": 360,
+            "scaleX": 0.8567675815939715,
+            "scaleY": 0.8607886923031886
+        },
+        {
+            "type": "Image",
+            "id": "102f7dfc-6204-45dd-b614-6a523a4b8013",
+            "label": "hopper_menu",
+            "texture": {
+                "key": "hopper_menu"
+            },
+            "x": 128,
+            "y": 514,
+            "scaleX": 0.32367022000844076,
+            "scaleY": 0.3344717508884089
+        },
+        {
+            "type": "Image",
+            "id": "f8b1099e-d6ff-481a-8f14-67551b1b27e1",
+            "label": "apulab_logo",
+            "texture": {
+                "key": "apulab_logo"
+            },
+            "x": 668,
+            "y": 127,
+            "scaleX": 0.3315021662386533,
+            "scaleY": 0.3209696430208045,
+            "originX": 0.5635063677026548,
+            "originY": 0.4810183274524026
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

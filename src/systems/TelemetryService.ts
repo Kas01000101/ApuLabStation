@@ -1,7 +1,6 @@
 import { TelemetryEvent, SyncStatus } from '../types/telemetry';
 import { GameState } from './GameState';
 import { LocalQueueService } from './LocalQueueService';
-import { AwsClient } from './AwsClient';
 import { SyncService } from './SyncService';
 
 export interface RecordEventOptions {
@@ -34,10 +33,13 @@ export class TelemetryService {
     const event: TelemetryEvent = {
       event_id: eventId,
       session_id: gameState.sessionId,
+      participant_id: gameState.participantId,
       participant_code: gameState.participantCode,
+      session_mode: gameState.sessionMode,
       build_version: gameState.buildVersion,
+      schema_version: gameState.schemaVersion,
       scene_id: opts.sceneId,
-      challenge_id: opts.challengeId,
+      challenge_id: opts.challengeId || gameState.currentChallenge || null,
       event_type: opts.eventType,
       attempt_number: opts.attemptNumber,
       payload: opts.payload || {},
@@ -46,20 +48,15 @@ export class TelemetryService {
       hint_used: opts.hintUsed || false,
       duration_seconds: opts.durationSeconds,
       timestamp: new Date().toISOString(),
+      client_timestamp: new Date().toISOString(),
       sync_status: syncStatus
     };
 
     // 1. SAVE LOCALLY FIRST (Offline-first rule)
     LocalQueueService.addEvent(event);
 
-    // 2. Background attempt to sync with Supabase and AWS
+    // 2. Background attempt to sync with Supabase
     SyncService.processQueue();
-
-    AwsClient.sendEvent(event).then((success) => {
-      if (success) {
-        LocalQueueService.updateEventStatus(eventId, 'synced');
-      }
-    });
 
     console.log(`[Telemetry] Recorded event: ${opts.eventType} (${opts.sceneId})`, event);
 

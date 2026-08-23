@@ -1,0 +1,49 @@
+{
+    "story": {
+        "files": [
+            {
+                "url": "assets/boot/intro/story/01_hopper_cuaderno_idea_rover.png",
+                "type": "image",
+                "key": "story_01"
+            },
+            {
+                "url": "assets/boot/intro/story/02_hopper_cuaderno_investigacion_rover.png",
+                "type": "image",
+                "key": "story_02"
+            },
+            {
+                "url": "assets/boot/intro/story/03_hopper_carta_apulab_cerrada.png",
+                "type": "image",
+                "key": "story_03"
+            },
+            {
+                "url": "assets/boot/intro/story/04_hopper_carta_apulab_abierta.png",
+                "type": "image",
+                "key": "story_04"
+            },
+            {
+                "url": "assets/boot/intro/story/05_hopper_observatorio_tierra.png",
+                "type": "image",
+                "key": "story_05"
+            },
+            {
+                "url": "assets/boot/intro/story/06_hopper_mujeres_peruanas_referentes.png",
+                "type": "image",
+                "key": "story_06"
+            },
+            {
+                "url": "assets/boot/intro/story/07_hopper_rover_lab_spirit.png",
+                "type": "image",
+                "key": "story_07"
+            }
+        ]
+    },
+    "meta": {
+        "app": "Phaser Editor 2D - Asset Pack Editor",
+        "contentType": "phasereditor2d.pack.core.AssetContentType",
+        "url": "https://phasereditor2d.com",
+        "version": 2,
+        "showAllFilesInBlocks": false,
+        "visible": true
+    }
+}

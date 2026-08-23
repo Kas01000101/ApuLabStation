@@ -1,137 +1,249 @@
-import Phaser from 'phaser';
-import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import * as Phaser from 'phaser';
+import mainMenuLayoutRaw from './MainMenuLayout.scene?raw';
+import { GameState } from '../../systems/GameState';
+import { TelemetryService } from '../../systems/TelemetryService';
+import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
+import { ApuButton, type ApuButtonVariant } from '../../ui/components/ApuButton';
+import { uiTokens } from '../../ui/tokens';
+import { DialoguePanel } from '../components/DialoguePanel';
+import { AccessModal } from '../../ui/components/AccessModal';
+import { clearApuLabDom } from '../../ui/domComponents';
+
+interface EditorImageObject {
+  type: 'Image';
+  label?: string;
+  texture?: {
+    key?: string;
+  };
+  x?: number;
+  y?: number;
+  scaleX?: number;
+  scaleY?: number;
+  angle?: number;
+  rotation?: number;
+  originX?: number;
+  originY?: number;
+  depth?: number;
+  visible?: boolean;
+}
+
+interface EditorSceneLayout {
+  displayList?: EditorImageObject[];
+}
 
 export class MainMenuScene extends Phaser.Scene {
-  private creditsOverlay?: HTMLDivElement;
+  private creditsPanel?: DialoguePanel;
+  private accessModal?: AccessModal;
+  private layoutImagesByLabel = new Map<string, Phaser.GameObjects.Image>();
+  private logoShineEffects: Phaser.Types.Actions.AddEffectShineReturn[] = [];
 
   constructor() {
     super({ key: 'MainMenuScene' });
   }
 
   create() {
-    const { width, height } = this.scale;
+    clearApuLabDom();
+    this.cleanupLogoShine();
+    this.layoutImagesByLabel.clear();
+    this.cameras.main.setBackgroundColor('#FFFFFF');
 
-    // Background Art
-    PlaceholderArt.drawSpaceLabBackground(this);
+    this.createEditorLayout();
+    this.applyLogoShine();
+    this.createMenuButtons();
 
-    // Title Panel Container
-    const panel = this.add.graphics();
-    panel.fillStyle(0x2D2654, 0.85);
-    panel.lineStyle(3, 0x4D4288, 1);
-    panel.fillRoundedRect(width / 2 - 360, 60, 720, 190, 24);
-    panel.strokeRoundedRect(width / 2 - 360, 60, 720, 190, 24);
-
-    // Title
-    const titleText = this.add.text(width / 2, 115, 'APULAB STATION', {
-      fontFamily: 'Space Grotesk, sans-serif',
-      fontSize: '52px',
-      color: '#00F2FE',
-      fontStyle: 'bold'
-    }).setOrigin(0.5);
-
-    // Title Glow Effect
-    titleText.setShadow(0, 0, '#00F2FE', 16, true, true);
-
-    // Subtitle in Spanish
-    this.add.text(width / 2, 185, 'Explora, experimenta y crea tu misión.', {
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '22px',
-      color: '#F8F9FA'
-    }).setOrigin(0.5);
-
-    // Opportunity Rover Mascot Graphic
-    this.add.image(width / 2 - 280, 155, 'rover_avatar').setScale(0.8);
-
-    // HTML DOM Buttons overlay for pixel-perfect child-friendly styling & accessible clicks
-    this.createUIOverlay();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanupLogoShine, this);
   }
 
-  private createUIOverlay(): void {
-    const container = document.getElementById('game-container');
-    if (!container) return;
+  private createEditorLayout(): void {
+    const layout = JSON.parse(mainMenuLayoutRaw) as EditorSceneLayout;
 
-    // Clean previous DOM if any
-    const existing = document.getElementById('main-menu-dom');
-    if (existing) existing.remove();
+    layout.displayList?.forEach((object) => {
+      if (object.type !== 'Image' || !object.texture?.key) return;
 
-    const domDiv = document.createElement('div');
-    domDiv.id = 'main-menu-dom';
-    domDiv.style.position = 'absolute';
-    domDiv.style.top = '300px';
-    domDiv.style.left = '50%';
-    domDiv.style.transform = 'translateX(-50%)';
-    domDiv.style.display = 'flex';
-    domDiv.style.flexDirection = 'column';
-    domDiv.style.alignItems = 'center';
-    domDiv.style.gap = '16px';
-    domDiv.style.zIndex = '50';
+      const image = this.add.image(object.x ?? 0, object.y ?? 0, object.texture.key);
+      image.setScale(object.scaleX ?? 1, object.scaleY ?? object.scaleX ?? 1);
 
-    // INICIAR BOTÓN
-    const startBtn = document.createElement('button');
-    startBtn.className = 'apulab-btn-primary';
-    startBtn.innerText = '🚀 INICIAR MISIÓN';
-    startBtn.style.fontSize = '1.6rem';
-    startBtn.style.padding = '16px 50px';
-    startBtn.onclick = () => {
-      domDiv.remove();
-      this.scene.start('ParticipantCodeScene');
-    };
+      if (typeof object.angle === 'number') image.setAngle(object.angle);
+      if (typeof object.rotation === 'number') image.setRotation(object.rotation);
+      if (typeof object.depth === 'number') image.setDepth(object.depth);
+      if (typeof object.visible === 'boolean') image.setVisible(object.visible);
+      if (typeof object.originX === 'number' || typeof object.originY === 'number') {
+        image.setOrigin(object.originX ?? 0.5, object.originY ?? 0.5);
+      }
+      if (object.label) {
+        this.layoutImagesByLabel.set(object.label, image);
+      }
+    });
+  }
 
-    // CONTINUAR BOTÓN (disabled)
-    const continueBtn = document.createElement('button');
-    continueBtn.className = 'apulab-btn-secondary';
-    continueBtn.innerText = 'CONTINUAR';
-    continueBtn.disabled = true;
-    continueBtn.style.opacity = '0.5';
-    continueBtn.style.cursor = 'not-allowed';
+  private applyLogoShine(): void {
+    const logo = this.layoutImagesByLabel.get('apulab_logo');
+    if (!logo || this.renderer.type !== Phaser.WEBGL) return;
 
-    // AJUSTES BOTÓN
-    const settingsBtn = document.createElement('button');
-    settingsBtn.className = 'apulab-btn-secondary';
-    settingsBtn.innerText = '⚙️ AJUSTES';
-    settingsBtn.onclick = () => {
-      alert('Control de audio y volumen estará disponible en la versión v0.2.');
-    };
+    try {
+      this.logoShineEffects = Phaser.Actions.AddEffectShine(logo, {
+        radius: 0.16,
+        direction: Math.PI * 0.18,
+        scale: 2,
+        duration: 1100,
+        repeatDelay: 3800,
+        yoyo: false,
+        ease: 'Sine.easeInOut',
+        colorFactor: [1.08, 1.16, 1.18, 1]
+      });
+    } catch (error) {
+      console.warn('[ApuLab] Logo shine effect unavailable; continuing with static logo.', error);
+      this.logoShineEffects = [];
+    }
+  }
 
-    // CRÉDITOS BOTÓN
-    const creditsBtn = document.createElement('button');
-    creditsBtn.className = 'apulab-btn-secondary';
-    creditsBtn.innerText = '📜 CRÉDITOS';
-    creditsBtn.onclick = () => this.showCreditsModal();
+  private cleanupLogoShine(): void {
+    this.logoShineEffects.forEach((effect) => {
+      try {
+        effect.tween?.destroy();
+        effect.dynamicTexture?.destroy();
+        effect.parallelFilters?.destroy();
+        effect.blendFilter?.destroy();
+        effect.gradient?.destroy();
+      } catch {
+        // Phaser 4 can release the internal DynamicTexture stamp before scene shutdown completes.
+      }
+    });
+    this.logoShineEffects = [];
+  }
 
-    domDiv.appendChild(startBtn);
-    domDiv.appendChild(continueBtn);
-    domDiv.appendChild(settingsBtn);
-    domDiv.appendChild(creditsBtn);
+  private createMenuButtons(): void {
+    const { width } = this.scale;
+    const buttonX = width / 2;
+    const groupCenterY = 430;
+    const buttonWidth = uiTokens.button.width;
+    const buttonHeight = uiTokens.button.height;
+    const gap = uiTokens.button.verticalGap;
+    const buttons: Array<{
+      label: string;
+      variant: ApuButtonVariant;
+      onClick: () => void;
+    }> = [
+      {
+        label: 'INICIAR MISIÓN',
+        variant: 'primary',
+        onClick: () => this.showMissionStartModal()
+      }
+    ];
 
-    container.appendChild(domDiv);
+    if (GameState.hasRecoverableSession()) {
+      buttons.push({
+        label: 'CONTINUAR',
+        variant: 'secondary',
+        onClick: () => {
+          const gameState = GameState.getInstance();
+          gameState.restoreSessionState();
+          clearApuLabDom();
+          this.scene.start(gameState.currentScene || 'OpportunityIntroScene');
+        }
+      });
+    }
+
+    buttons.push(
+      {
+        label: 'AJUSTES',
+        variant: 'utilityDark',
+        onClick: () => {
+          window.alert('Control de audio y volumen estará disponible en la versión v0.2.');
+        }
+      },
+      {
+        label: 'CRÉDITOS',
+        variant: 'utilityLight',
+        onClick: () => this.showCreditsModal()
+      }
+    );
+
+    const totalHeight = buttons.length * buttonHeight + (buttons.length - 1) * gap;
+    const firstButtonY = groupCenterY - totalHeight / 2 + buttonHeight / 2;
+
+    buttons.forEach((button, index) => {
+      new ApuButton(this, {
+        x: buttonX,
+        y: firstButtonY + index * (buttonHeight + gap),
+        width: buttonWidth,
+        height: buttonHeight,
+        label: button.label,
+        variant: button.variant,
+        onClick: button.onClick
+      }).setDepth(50);
+    });
   }
 
   private showCreditsModal(): void {
-    const container = document.getElementById('game-container');
-    if (!container) return;
+    this.creditsPanel?.destroy();
+    this.creditsPanel = new DialoguePanel(this, {
+      title: 'APULAB STATION',
+      body: 'Juego educativo STEM - Piloto Web v0.1\nDesarrollado para investigación y aprendizaje de ciencias y tecnología.',
+      buttonLabel: 'CERRAR',
+      onClose: () => {
+        this.creditsPanel = undefined;
+      }
+    });
+  }
 
-    this.creditsOverlay = document.createElement('div');
-    this.creditsOverlay.className = 'apulab-overlay';
-    this.creditsOverlay.innerHTML = `
-      <div class="apulab-card">
-        <div class="apulab-title">APULAB STATION</div>
-        <div class="apulab-subtitle">Juego Educativo STEM • Piloto Web v0.1</div>
-        <p style="font-size: 1.1rem; line-height: 1.6; color: #E2E8F0; margin-bottom: 24px;">
-          Desarrollado para la investigación y el aprendizaje de ciencias y tecnología.<br>
-          Potenciando el pensamiento computacional y el razonamiento científico.
-        </p>
-        <button id="close-credits-btn" class="apulab-btn-primary">CERRAR</button>
-      </div>
-    `;
+  private showMissionStartModal(): void {
+    if (this.accessModal) return;
 
-    container.appendChild(this.creditsOverlay);
+    this.accessModal = new AccessModal({
+      onStudySubmit: (code, credential) => this.startSessionFromModal('study', code, credential),
+      onDemoSubmit: () => this.startSessionFromModal('demo', '', ''),
+      onClose: () => {
+        this.accessModal = undefined;
+      }
+    });
+  }
 
-    const closeBtn = document.getElementById('close-credits-btn');
-    if (closeBtn) {
-      closeBtn.onclick = () => {
-        if (this.creditsOverlay) this.creditsOverlay.remove();
-      };
+  private async startSessionFromModal(
+    mode: 'study' | 'demo',
+    rawCode: string,
+    credential: string
+  ): Promise<boolean> {
+    const repository = getResearchRepository();
+
+    if (mode === 'study' && repository.mode === 'mock') {
+      this.accessModal?.setError('El modo de investigación no está activo en este entorno. Usa DEMO para desarrollo.');
+      return false;
     }
+
+    if (mode === 'study' && (!rawCode || !credential)) {
+      this.accessModal?.setError('Completa código y contraseña del estudio.');
+      return false;
+    }
+
+    const auth = mode === 'study'
+      ? await repository.authenticateParticipant({ participantCode: rawCode, credential })
+      : null;
+
+    if (mode === 'study' && (!auth?.success || !auth.data)) {
+      this.accessModal?.setError('El código o la contraseña no son correctos.');
+      return false;
+    }
+
+    const gameState = GameState.getInstance();
+    gameState.startNewSession(mode, mode === 'study' ? rawCode : null, auth?.data?.participant_id ?? null);
+    const sessionResult = await repository.createSession(gameState.getSessionData());
+    if (!sessionResult.success) {
+      this.accessModal?.setError(mode === 'study' ? 'No se pudo iniciar la sesión de estudio.' : 'No se pudo iniciar la sesión demo.');
+      return false;
+    }
+
+    TelemetryService.getInstance().recordEvent({
+      sceneId: 'MainMenuScene',
+      eventType: 'session_started',
+      payload: {
+        session_id: gameState.sessionId,
+        session_mode: gameState.sessionMode
+      }
+    });
+
+    clearApuLabDom();
+    this.scene.start('OpportunityIntroScene');
+    return true;
   }
 }

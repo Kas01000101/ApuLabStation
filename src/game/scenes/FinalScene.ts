@@ -1,9 +1,10 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { ExportService } from '../../systems/ExportService';
-import { AwsClient } from '../../systems/AwsClient';
+import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { clearApuLabDom } from '../../ui/domComponents';
 
 export class FinalScene extends Phaser.Scene {
   constructor() {
@@ -11,6 +12,7 @@ export class FinalScene extends Phaser.Scene {
   }
 
   create() {
+    clearApuLabDom();
     PlaceholderArt.drawSpaceLabBackground(this);
 
     const gameState = GameState.getInstance();
@@ -21,13 +23,14 @@ export class FinalScene extends Phaser.Scene {
       eventType: 'game_completed',
       payload: {
         participant_code: gameState.participantCode,
+        session_mode: gameState.sessionMode,
         session_id: gameState.sessionId,
         started_at: gameState.startedAt,
-        finished_at: gameState.finishedAt
+        completed_at: gameState.completedAt
       }
     });
 
-    AwsClient.finishSession(gameState.sessionId);
+    getResearchRepository().completeSession(gameState.sessionId, gameState.completedAt);
 
     this.renderSummaryDOM();
   }
@@ -40,6 +43,7 @@ export class FinalScene extends Phaser.Scene {
     if (existing) existing.remove();
 
     const gameState = GameState.getInstance();
+    const sessionLabel = gameState.participantCode || 'DEMO';
 
     const overlay = document.createElement('div');
     overlay.id = 'final-summary-dom';
@@ -50,7 +54,7 @@ export class FinalScene extends Phaser.Scene {
         <div style="font-size: 3.5rem; margin-bottom: 8px;">🎉🏆🚀</div>
         <div class="apulab-title" style="font-size: 2.4rem; margin-bottom: 4px;">¡MISIÓN COMPLETADA!</div>
         <div class="apulab-subtitle" style="margin-bottom: 20px; color: #00F2FE;">
-          Participante: <strong>${gameState.participantCode}</strong> | Sesión: ${gameState.sessionId.substring(0, 8)}...
+          Modo: <strong>${gameState.sessionMode.toUpperCase()}</strong> | Código: <strong>${sessionLabel}</strong> | Sesión: ${gameState.sessionId.substring(0, 8)}...
         </div>
 
         <div style="background: rgba(20, 25, 56, 0.95); border: 2px solid #4D4288; border-radius: 16px; padding: 20px; text-align: left; margin-bottom: 24px;">

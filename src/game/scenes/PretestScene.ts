@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { PRETEST_QUESTIONS } from '../../data/pretestQuestions';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
@@ -101,6 +101,6 @@ export class PretestScene extends Phaser.Scene {
     const existing = document.getElementById('pretest-dom');
     if (existing) existing.remove();
 
-    this.scene.start('Level1HubbleScene');
+    this.scene.start('Level2HubbleScene');
   }
 }

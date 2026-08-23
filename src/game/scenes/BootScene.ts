@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -13,6 +13,9 @@ export class BootScene extends Phaser.Scene {
       fontSize: '24px',
       color: '#00F2FE'
     }).setOrigin(0.5);
+
+    this.load.pack('menu', 'assets/boot/menu/menu-pack.json');
+    this.load.pack('intro', 'assets/boot/intro/intro-pack.json');
   }
 
   create() {
