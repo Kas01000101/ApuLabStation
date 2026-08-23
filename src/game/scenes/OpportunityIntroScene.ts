@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import '@fontsource/nunito-sans/latin-400.css';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { clearApuLabDom } from '../../ui/domComponents';
@@ -30,13 +31,24 @@ const FADE_OUT_MS = 130;
 const FADE_IN_MS = 210;
 const NUNITO_FONT_FACE = '"Nunito Sans"';
 const DIALOG_FONT_FAMILY = `${NUNITO_FONT_FACE}, Arial, sans-serif`;
-const DIALOG_FONT_WEIGHT = '600';
+const DIALOG_FONT_WEIGHT = '400';
 const DIALOG_FONT_STYLE = 'normal';
-const DIALOG_FONT_SIZE = 19;
-const BUTTON_FONT_SIZE = 16;
-const UI_CLICK_SOUND_KEY = 'ui_click';
-const UI_CLICK_VOLUME = 0.25;
-const UI_CLICK_MIN_INTERVAL_MS = 120;
+const DIALOG_FONT_SIZE = 15;
+const BUTTON_FONT_SIZE = 12;
+const PANEL_WIDTH_RATIO = 0.6;
+const PANEL_MAX_WIDTH = 700;
+const PANEL_MIN_HEIGHT = 58;
+const PANEL_MAX_HEIGHT = 105;
+const PANEL_BOTTOM_MARGIN = 56;
+const PANEL_RADIUS = 24;
+const PANEL_HORIZONTAL_PADDING = 22;
+const PANEL_TOP_PADDING = 14;
+const BUTTON_HEIGHT = 28;
+const PANEL_BOTTOM_PADDING = 20;
+const BUTTON_WIDTH = 86;
+const FINAL_BUTTON_WIDTH = 100;
+const BUTTON_RADIUS = BUTTON_HEIGHT / 2;
+const NAV_CLICK_MIN_INTERVAL_MS = 90;
 
 export class OpportunityIntroScene extends Phaser.Scene {
   private currentSlideIndex = 0;
@@ -74,14 +86,13 @@ export class OpportunityIntroScene extends Phaser.Scene {
 
   private storyImage?: Phaser.GameObjects.Image;
   private dialogShadow?: Phaser.GameObjects.Graphics;
-  private dialogGlow?: Phaser.GameObjects.Graphics;
   private dialogPanel?: Phaser.GameObjects.Graphics;
   private dialogText?: Phaser.GameObjects.Text;
   private previousButton?: NavigationButton;
   private nextButton?: NavigationButton;
   private activeTween?: Phaser.Tweens.Tween;
   private isTransitioning = false;
-  private lastUiClickSoundAt = 0;
+  private lastNavigationClickAt = 0;
 
   private dialogBounds = new Phaser.Geom.Rectangle();
   private buttonCenterY = 0;
@@ -124,77 +135,91 @@ export class OpportunityIntroScene extends Phaser.Scene {
 
   private createDialogUI(): void {
     const width = this.scale.width;
-    const height = this.scale.height;
-    const panelWidth = Math.min(width * 0.7, 760);
-    const panelHeight = Phaser.Math.Clamp(height * 0.18, 122, 138);
+    const panelWidth = this.getDialogPanelWidth();
+    const panelHeight = PANEL_MIN_HEIGHT;
     const x = (width - panelWidth) / 2;
-    const y = height - panelHeight - 28;
-    const radius = 32;
-    const paddingX = 28;
-    const paddingTop = 17;
-    const paddingBottom = 17;
-    const buttonHeight = 40;
-    const usefulHeight = panelHeight - paddingTop - paddingBottom;
-    const textAreaHeight = usefulHeight - buttonHeight - 15;
+    const y = this.scale.height - PANEL_BOTTOM_MARGIN - panelHeight;
     const textCenterX = x + panelWidth / 2;
-    const textCenterY = y + paddingTop + textAreaHeight / 2;
     const dialogFontSize = DIALOG_FONT_SIZE;
-    this.buttonCenterY = y + panelHeight - paddingBottom - buttonHeight / 2;
 
     this.dialogBounds.setTo(x, y, panelWidth, panelHeight);
 
     this.dialogShadow = this.add.graphics().setDepth(19);
-    this.dialogShadow.fillStyle(0x05020d, 0.14);
-    this.dialogShadow.fillRoundedRect(x + 1, y + 7, panelWidth, panelHeight + 1, radius + 2);
-
-    this.dialogGlow = this.add.graphics().setDepth(21).setAlpha(0.55);
-    this.dialogGlow.lineStyle(5, 0xc77dff, 0.12);
-    this.dialogGlow.strokeRoundedRect(x - 3, y - 3, panelWidth + 6, panelHeight + 6, radius + 4);
-
-    this.tweens.add({
-      targets: this.dialogGlow,
-      alpha: 0.72,
-      duration: 1400,
-      ease: 'Sine.InOut',
-      yoyo: true,
-      repeat: -1
-    });
 
     this.dialogPanel = this.add.graphics().setDepth(22);
-    this.dialogPanel.fillStyle(0x140e26, 0.78);
-    this.dialogPanel.fillRoundedRect(x, y, panelWidth, panelHeight, radius);
-    this.dialogPanel.lineStyle(2, 0xc77dff, 0.9);
-    this.dialogPanel.strokeRoundedRect(x, y, panelWidth, panelHeight, radius);
 
-    this.dialogText = this.add.text(textCenterX, textCenterY, '', {
+    this.dialogText = this.add.text(textCenterX, y + PANEL_TOP_PADDING, '', {
       fontFamily: DIALOG_FONT_FAMILY,
       fontSize: `${dialogFontSize}px`,
       fontStyle: `${DIALOG_FONT_STYLE} ${DIALOG_FONT_WEIGHT}`,
       color: '#FFFFFF',
       align: 'center',
       strokeThickness: 0,
-      lineSpacing: 6,
+      lineSpacing: 3,
       shadow: {
         offsetX: 0,
         offsetY: 1,
-        color: 'rgba(0, 0, 0, 0.2)',
-        blur: 2,
+        color: 'rgba(0, 0, 0, 0.18)',
+        blur: 1,
         fill: true
       },
       wordWrap: {
-        width: panelWidth - paddingX * 2,
+        width: panelWidth - PANEL_HORIZONTAL_PADDING * 2,
         useAdvancedWrap: true
       }
-    }).setOrigin(0.5).setDepth(23);
+    }).setOrigin(0.5, 0).setDepth(23);
 
     this.previousButton = this.createNavigationButton('Anterior', () => this.goPrevious());
     this.nextButton = this.createNavigationButton('Siguiente', () => this.goNext());
   }
 
+  private getDialogPanelWidth(): number {
+    return Math.min(this.scale.width * PANEL_WIDTH_RATIO, PANEL_MAX_WIDTH);
+  }
+
+  private updateDialogLayout(): void {
+    if (!this.dialogText || !this.dialogShadow || !this.dialogPanel) return;
+
+    const panelWidth = this.getDialogPanelWidth();
+    const panelCenterX = this.scale.width / 2;
+    const panelX = panelCenterX - panelWidth / 2;
+    const wordWrapWidth = panelWidth - PANEL_HORIZONTAL_PADDING * 2;
+
+    this.dialogText.setWordWrapWidth(wordWrapWidth, true);
+    const textHeight = Math.ceil(this.dialogText.height);
+    const calculatedHeight = textHeight + PANEL_TOP_PADDING + PANEL_BOTTOM_PADDING;
+    const panelHeight = Phaser.Math.Clamp(calculatedHeight, PANEL_MIN_HEIGHT, PANEL_MAX_HEIGHT);
+    const panelBottom = this.scale.height - PANEL_BOTTOM_MARGIN;
+    const panelTop = panelBottom - panelHeight;
+    const buttonCenterY = panelBottom;
+
+    this.dialogBounds.setTo(panelX, panelTop, panelWidth, panelHeight);
+    this.buttonCenterY = buttonCenterY;
+
+    this.dialogShadow.clear();
+    this.dialogShadow.fillStyle(0x000000, 0.2);
+    this.dialogShadow.fillRoundedRect(
+      panelX - 5,
+      panelTop + 4,
+      panelWidth + 10,
+      panelHeight + 6,
+      PANEL_RADIUS + 4
+    );
+
+    this.dialogPanel.clear();
+    this.dialogPanel.fillStyle(0x252736, 0.78);
+    this.dialogPanel.fillRoundedRect(panelX, panelTop, panelWidth, panelHeight, PANEL_RADIUS);
+    this.dialogPanel.lineStyle(2, 0x72758a, 0.55);
+    this.dialogPanel.strokeRoundedRect(panelX, panelTop, panelWidth, panelHeight, PANEL_RADIUS);
+
+    this.dialogText.setPosition(panelCenterX, panelTop + PANEL_TOP_PADDING);
+    this.dialogText.setData('dialogBaseY', this.dialogText.y);
+  }
+
   private createNavigationButton(label: string, onClick: () => void): NavigationButton {
-    let buttonWidth = 124;
-    const buttonHeight = 40;
-    const radius = 20;
+    let buttonWidth = BUTTON_WIDTH;
+    const buttonHeight = BUTTON_HEIGHT;
+    const radius = BUTTON_RADIUS;
     const container = this.add.container(0, 0).setDepth(24);
     const shadow = this.add.graphics();
     const background = this.add.graphics();
@@ -203,21 +228,19 @@ export class OpportunityIntroScene extends Phaser.Scene {
       fontFamily: DIALOG_FONT_FAMILY,
       fontSize: `${BUTTON_FONT_SIZE}px`,
       fontStyle: `${DIALOG_FONT_STYLE} ${DIALOG_FONT_WEIGHT}`,
-      color: '#6E6486',
+      color: '#676078',
       align: 'center'
     }).setOrigin(0.5);
 
-    const draw = (fillColor = 0xffffff, isHover = false): void => {
+    const draw = (fillColor = 0xf8f7fb, isHover = false): void => {
       shadow.clear();
-      shadow.fillStyle(0x9b4dff, isHover ? 0.08 : 0.05);
-      shadow.fillRoundedRect(-buttonWidth / 2 - 1, -buttonHeight / 2 + 3, buttonWidth + 2, buttonHeight + 2, radius + 1);
-      shadow.fillStyle(0x000000, isHover ? 0.05 : 0.04);
+      shadow.fillStyle(0x000000, isHover ? 0.11 : 0.08);
       shadow.fillRoundedRect(-buttonWidth / 2 + 1, -buttonHeight / 2 + 3, buttonWidth - 2, buttonHeight, radius);
 
       background.clear();
       background.fillStyle(fillColor, 1);
       background.fillRoundedRect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight, radius);
-      background.lineStyle(1, isHover ? 0xd8cff0 : 0xe8e0f2, 0.9);
+      background.lineStyle(1, isHover ? 0xcfd1dc : 0xd9dae2, 1);
       background.strokeRoundedRect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight, radius);
     };
 
@@ -229,20 +252,22 @@ export class OpportunityIntroScene extends Phaser.Scene {
 
     hitArea.on(Phaser.Input.Events.POINTER_OVER, () => {
       draw(0xffffff, true);
-      this.tweens.add({ targets: container, scale: 1.02, duration: 100, ease: 'Sine.easeOut' });
+      this.tweens.add({ targets: container, scale: 1.01, duration: 80, ease: 'Sine.easeOut' });
     });
     hitArea.on(Phaser.Input.Events.POINTER_OUT, () => {
       draw();
-      this.tweens.add({ targets: container, scale: 1, duration: 100, ease: 'Sine.easeOut' });
+      this.tweens.add({ targets: container, scale: 1, duration: 80, ease: 'Sine.easeOut' });
     });
     hitArea.on(Phaser.Input.Events.POINTER_DOWN, () => {
-      this.tweens.add({ targets: container, scale: 0.98, duration: 80, ease: 'Sine.easeOut' });
+      draw(0xe9e5ef);
+      this.tweens.add({ targets: container, scale: 0.94, duration: 55, ease: 'Sine.easeOut' });
     });
     hitArea.on(Phaser.Input.Events.POINTER_UP, () => {
       if (this.isTransitioning) return;
 
-      this.tweens.add({ targets: container, scale: 1, duration: 100, ease: 'Sine.easeOut' });
-      this.playNarrativeButtonSfx();
+      draw();
+      this.tweens.add({ targets: container, scale: 1, duration: 70, ease: 'Sine.easeOut' });
+      this.playNavigationClick();
       onClick();
     });
 
@@ -290,13 +315,48 @@ export class OpportunityIntroScene extends Phaser.Scene {
     ]);
   }
 
-  private playNarrativeButtonSfx(): void {
+  private playNavigationClick(): void {
     const now = this.time.now;
-    if (now - this.lastUiClickSoundAt < UI_CLICK_MIN_INTERVAL_MS) return;
-    if (!this.cache.audio.exists(UI_CLICK_SOUND_KEY)) return;
+    if (now - this.lastNavigationClickAt < NAV_CLICK_MIN_INTERVAL_MS) return;
+    if (this.sound.mute || this.sound.volume <= 0) return;
 
-    this.lastUiClickSoundAt = now;
-    this.sound.play(UI_CLICK_SOUND_KEY, { volume: UI_CLICK_VOLUME });
+    const soundManager = this.sound as Phaser.Sound.WebAudioSoundManager;
+    const audioContext = soundManager.context;
+    if (!audioContext) return;
+
+    const playClick = (): void => {
+      const startTime = audioContext.currentTime;
+      const endTime = startTime + 0.075;
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const destination = soundManager.destination ?? audioContext.destination;
+      const peakGain = 0.06 * Phaser.Math.Clamp(this.sound.volume, 0, 1);
+
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(650, startTime);
+      oscillator.frequency.exponentialRampToValueAtTime(480, endTime);
+
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(peakGain, startTime + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, endTime);
+
+      oscillator.connect(gain);
+      gain.connect(destination);
+      oscillator.start(startTime);
+      oscillator.stop(endTime + 0.01);
+      oscillator.onended = () => {
+        oscillator.disconnect();
+        gain.disconnect();
+      };
+    };
+
+    this.lastNavigationClickAt = now;
+    if (audioContext.state === 'suspended') {
+      void audioContext.resume().then(playClick).catch(() => undefined);
+      return;
+    }
+
+    playClick();
   }
 
   private bindControls(): void {
@@ -318,6 +378,7 @@ export class OpportunityIntroScene extends Phaser.Scene {
       this.storyImage?.setTexture(slide.textureKey).setAlpha(1);
       this.fitImageToCamera();
       this.dialogText?.setText(slide.text);
+      this.updateDialogLayout();
       GameState.getInstance().updateProgress('OpportunityIntroScene', 0, slide.textureKey);
       this.updateNavigationButtons();
       this.animateDialogEntrance();
@@ -401,7 +462,6 @@ export class OpportunityIntroScene extends Phaser.Scene {
   private getDialogObjects(): DialogAnimatable[] {
     const objects: Array<DialogAnimatable | undefined> = [
       this.dialogShadow,
-      this.dialogGlow,
       this.dialogPanel,
       this.dialogText,
       this.previousButton?.container,
@@ -416,27 +476,27 @@ export class OpportunityIntroScene extends Phaser.Scene {
 
     const buttonY = this.buttonCenterY;
     const centerX = this.dialogBounds.centerX;
-    const leftX = centerX - 135;
-    const rightX = centerX + 135;
+    const leftX = centerX - 105;
+    const rightX = centerX + 105;
 
     if (this.currentSlideIndex === 0) {
       this.previousButton.setVisible(false);
-      this.nextButton.setWidth(124);
+      this.nextButton.setWidth(BUTTON_WIDTH);
       this.nextButton.setLabel('Siguiente');
       this.nextButton.setPosition(centerX, buttonY);
       return;
     }
 
     this.previousButton.setVisible(true);
-    this.previousButton.setWidth(124);
+    this.previousButton.setWidth(BUTTON_WIDTH);
     this.previousButton.setPosition(leftX, buttonY);
     this.nextButton.setPosition(rightX, buttonY);
 
     if (this.currentSlideIndex === this.slides.length - 1) {
-      this.nextButton.setWidth(132);
+      this.nextButton.setWidth(FINAL_BUTTON_WIDTH);
       this.nextButton.setLabel('Comenzar');
     } else {
-      this.nextButton.setWidth(124);
+      this.nextButton.setWidth(BUTTON_WIDTH);
       this.nextButton.setLabel('Siguiente');
     }
   }
@@ -511,8 +571,6 @@ export class OpportunityIntroScene extends Phaser.Scene {
     this.storyImage = undefined;
     this.dialogShadow?.destroy();
     this.dialogShadow = undefined;
-    this.dialogGlow?.destroy();
-    this.dialogGlow = undefined;
     this.dialogPanel?.destroy();
     this.dialogPanel = undefined;
     this.dialogText?.destroy();
