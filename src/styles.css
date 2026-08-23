@@ -33,13 +33,37 @@ body, html {
   color: var(--text-light);
 }
 
+body {
+  position: relative;
+}
+
+#three-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  background:
+    linear-gradient(180deg, #050A18 0%, #08172D 52%, #102440 100%);
+}
+
+#three-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #FFFFFF;
+  position: relative;
+  z-index: 1;
+  background: transparent;
 }
 
 #game-container {
@@ -51,7 +75,11 @@ body, html {
   box-shadow: none;
   border-radius: 0;
   overflow: hidden;
-  background: #FFFFFF;
+  background: transparent;
+}
+
+#game-container canvas {
+  background: transparent !important;
 }
 
 /* Custom DOM Overlays for accessible child-friendly dialogues / inputs when needed */

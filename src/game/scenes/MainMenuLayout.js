@@ -20,11 +20,11 @@ class MainMenuLayout extends Phaser.Scene {
 
 		// menu_background
 		const menu_background = this.add.image(635, 360, "menu_background");
-		menu_background.scaleX = 0.766;
-		menu_background.scaleY = 0.766;
+		menu_background.scaleX = 0.8567675815939715;
+		menu_background.scaleY = 0.8607886923031886;
 
 		// hopper_menu
-		const hopper_menu = this.add.image(151, 462, "hopper_menu");
+		const hopper_menu = this.add.image(128, 514, "hopper_menu");
 		hopper_menu.scaleX = 0.32367022000844076;
 		hopper_menu.scaleY = 0.3344717508884089;
 

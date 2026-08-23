@@ -45,6 +45,7 @@ export class MainMenuScene extends Phaser.Scene {
     clearApuLabDom();
     this.cleanupLogoShine();
     this.layoutImagesByLabel.clear();
+    this.cameras.main.setBackgroundColor('#FFFFFF');
 
     this.createEditorLayout();
     this.applyLogoShine();
@@ -98,11 +99,15 @@ export class MainMenuScene extends Phaser.Scene {
 
   private cleanupLogoShine(): void {
     this.logoShineEffects.forEach((effect) => {
-      effect.tween?.destroy();
-      effect.dynamicTexture?.destroy();
-      effect.parallelFilters?.destroy();
-      effect.blendFilter?.destroy();
-      effect.gradient?.destroy();
+      try {
+        effect.tween?.destroy();
+        effect.dynamicTexture?.destroy();
+        effect.parallelFilters?.destroy();
+        effect.blendFilter?.destroy();
+        effect.gradient?.destroy();
+      } catch {
+        // Phaser 4 can release the internal DynamicTexture stamp before scene shutdown completes.
+      }
     });
     this.logoShineEffects = [];
   }

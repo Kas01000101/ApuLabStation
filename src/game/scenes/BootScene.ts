@@ -15,6 +15,7 @@ export class BootScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     this.load.pack('menu', 'assets/boot/menu/menu-pack.json');
+    this.load.pack('intro', 'assets/boot/intro/intro-pack.json');
   }
 
   create() {
