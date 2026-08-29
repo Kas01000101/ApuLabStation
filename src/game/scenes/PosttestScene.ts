@@ -4,6 +4,7 @@ import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 
 export class PosttestScene extends Phaser.Scene {
   private currentQuestionIndex: number = 0;
@@ -68,6 +69,7 @@ export class PosttestScene extends Phaser.Scene {
     const optButtons = overlay.querySelectorAll('.posttest-opt-btn');
     optButtons.forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
+        playUiClick(this);
         const target = e.currentTarget as HTMLButtonElement;
         const optId = target.getAttribute('data-id') || '';
         this.handleAnswer(q.id, optId);

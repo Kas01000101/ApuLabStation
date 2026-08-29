@@ -4,6 +4,7 @@ import { RoverLabEngine } from '../../engines/RoverLabEngine';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 import { clearApuLabDom } from '../../ui/domComponents';
 
 export class Level1RoverLabScene extends Phaser.Scene {
@@ -107,6 +108,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
     // Event listeners
     overlay.querySelectorAll('.measure-bat-btn').forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
+        playUiClick(this);
         const id = (e.currentTarget as HTMLButtonElement).getAttribute('data-id') || '';
         const bat = BATTERY_OPTIONS.find(b => b.id === id);
         if (bat) {
@@ -119,6 +121,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
 
     overlay.querySelectorAll('.select-bat-btn').forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
+        playUiClick(this);
         this.selectedBatteryId = (e.currentTarget as HTMLButtonElement).getAttribute('data-id') || '';
         const fb = document.getElementById('bat-feedback');
         const bat = BATTERY_OPTIONS.find(b => b.id === this.selectedBatteryId);
@@ -129,6 +132,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
     const testBtn = document.getElementById('test-battery-btn');
     if (testBtn) {
       testBtn.onclick = () => {
+        playUiClick(this);
         const radios = document.getElementsByName('bat_reason');
         radios.forEach(r => {
           if ((r as HTMLInputElement).checked) this.selectedReasonId = (r as HTMLInputElement).value;
@@ -264,6 +268,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
 
     overlay.querySelectorAll('.inspect-sensor-btn').forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
+        playUiClick(this);
         const id = (e.currentTarget as HTMLButtonElement).getAttribute('data-id') || '';
         const sensor = SENSOR_OPTIONS.find(s => s.id === id);
         if (sensor) {
@@ -276,6 +281,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
 
     overlay.querySelectorAll('.sensor-checkbox').forEach(cb => {
       (cb as HTMLInputElement).onchange = (e) => {
+        playUiClick(this);
         const id = (e.currentTarget as HTMLInputElement).getAttribute('data-id') || '';
         const isChecked = (e.currentTarget as HTMLInputElement).checked;
 
@@ -293,6 +299,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
     const testBtn = document.getElementById('test-sensors-btn');
     if (testBtn) {
       testBtn.onclick = () => {
+        playUiClick(this);
         this.attempt2B++;
         const res = RoverLabEngine.testSensorSelection(this.selectedSensorIds);
 
@@ -434,6 +441,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
 
     overlay.querySelectorAll('.calib-adj-btn').forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
+        playUiClick(this);
         const delta = parseInt((e.currentTarget as HTMLButtonElement).getAttribute('data-val') || '0');
         const newVal = this.engine.adjustStationReading(st.id, delta);
 
@@ -450,6 +458,7 @@ export class Level1RoverLabScene extends Phaser.Scene {
     const testBtn = document.getElementById('test-calib-btn');
     if (testBtn) {
       testBtn.onclick = () => {
+        playUiClick(this);
         const res = this.engine.testCalibrationStation(st.id);
         const attempt = this.engine.calibrationAttempts[st.id];
 

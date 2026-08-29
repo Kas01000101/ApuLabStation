@@ -3,6 +3,7 @@ import { PRETEST_QUESTIONS } from '../../data/pretestQuestions';
 import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 
 export class PretestScene extends Phaser.Scene {
   private currentQuestionIndex: number = 0;
@@ -67,6 +68,7 @@ export class PretestScene extends Phaser.Scene {
     const optButtons = overlay.querySelectorAll('.pretest-opt-btn');
     optButtons.forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
+        playUiClick(this);
         const target = e.currentTarget as HTMLButtonElement;
         const optId = target.getAttribute('data-id') || '';
         this.handleAnswer(q.id, optId);

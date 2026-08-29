@@ -5,6 +5,7 @@ import { GridCommand } from '../../types/challenges';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 import { clearApuLabDom } from '../../ui/domComponents';
 
 export class Level3ProgrammingScene extends Phaser.Scene {
@@ -176,6 +177,7 @@ export class Level3ProgrammingScene extends Phaser.Scene {
     editorDiv.querySelectorAll('.add-cmd-btn').forEach(btn => {
       (btn as HTMLButtonElement).onclick = (e) => {
         if (this.isSimulating) return;
+        playUiClick(this);
         const cmd = (e.currentTarget as HTMLButtonElement).getAttribute('data-cmd') as GridCommand;
         this.currentCommands.push(cmd);
         this.updateProgramQueueUI(config);
@@ -193,6 +195,7 @@ export class Level3ProgrammingScene extends Phaser.Scene {
     if (clearBtn) {
       clearBtn.onclick = () => {
         if (this.isSimulating) return;
+        playUiClick(this);
         this.currentCommands = [];
         this.updateProgramQueueUI(config);
       };
@@ -202,6 +205,7 @@ export class Level3ProgrammingScene extends Phaser.Scene {
     if (runBtn) {
       runBtn.onclick = () => {
         if (this.isSimulating || this.currentCommands.length === 0) return;
+        playUiClick(this);
         this.runSimulationAnimation(index);
       };
     }
@@ -428,6 +432,7 @@ export class Level3ProgrammingScene extends Phaser.Scene {
     const testBtn = document.getElementById('test-landing-btn');
     if (testBtn) {
       testBtn.onclick = () => {
+        playUiClick(this);
         document.getElementsByName('landing_action').forEach(r => {
           if ((r as HTMLInputElement).checked) this.selectedLandingAction = (r as HTMLInputElement).value;
         });

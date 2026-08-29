@@ -8,6 +8,7 @@ import { uiTokens } from '../../ui/tokens';
 import { DialoguePanel } from '../components/DialoguePanel';
 import { AccessModal } from '../../ui/components/AccessModal';
 import { clearApuLabDom } from '../../ui/domComponents';
+import { playUiClick } from '../../ui/audio/playUiClick';
 
 interface EditorImageObject {
   type: 'Image';
@@ -43,6 +44,7 @@ export class MainMenuScene extends Phaser.Scene {
 
   create() {
     clearApuLabDom();
+    GameState.clearLegacyRecoverableState();
     this.cleanupLogoShine();
     this.layoutImagesByLabel.clear();
     this.cameras.main.setBackgroundColor('#FFFFFF');
@@ -131,19 +133,6 @@ export class MainMenuScene extends Phaser.Scene {
       }
     ];
 
-    if (GameState.hasRecoverableSession()) {
-      buttons.push({
-        label: 'CONTINUAR',
-        variant: 'secondary',
-        onClick: () => {
-          const gameState = GameState.getInstance();
-          gameState.restoreSessionState();
-          clearApuLabDom();
-          this.scene.start(gameState.currentScene || 'OpportunityIntroScene');
-        }
-      });
-    }
-
     buttons.push(
       {
         label: 'AJUSTES',
@@ -181,6 +170,7 @@ export class MainMenuScene extends Phaser.Scene {
       title: 'APULAB STATION',
       body: 'Juego educativo STEM - Piloto Web v0.1\nDesarrollado para investigación y aprendizaje de ciencias y tecnología.',
       buttonLabel: 'CERRAR',
+      onButtonPress: () => playUiClick(this),
       onClose: () => {
         this.creditsPanel = undefined;
       }
@@ -193,6 +183,7 @@ export class MainMenuScene extends Phaser.Scene {
     this.accessModal = new AccessModal({
       onStudySubmit: (code, credential) => this.startSessionFromModal('study', code, credential),
       onDemoSubmit: () => this.startSessionFromModal('demo', '', ''),
+      onButtonPress: () => playUiClick(this),
       onClose: () => {
         this.accessModal = undefined;
       }

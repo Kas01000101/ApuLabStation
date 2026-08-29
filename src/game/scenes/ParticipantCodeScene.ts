@@ -3,6 +3,7 @@ import { GameState } from '../../systems/GameState';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 import { clearApuLabDom, createOverlay } from '../../ui/domComponents';
 
 export class ParticipantCodeScene extends Phaser.Scene {
@@ -83,10 +84,19 @@ export class ParticipantCodeScene extends Phaser.Scene {
       this.scene.start('OpportunityIntroScene');
     };
 
-    submitBtn?.addEventListener('click', () => startSession('study'));
-    skipBtn?.addEventListener('click', () => startSession('demo'));
+    submitBtn?.addEventListener('click', () => {
+      playUiClick(this);
+      startSession('study');
+    });
+    skipBtn?.addEventListener('click', () => {
+      playUiClick(this);
+      startSession('demo');
+    });
     inputEl?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') startSession('study');
+      if (e.key === 'Enter') {
+        playUiClick(this);
+        startSession('study');
+      }
     });
   }
 }

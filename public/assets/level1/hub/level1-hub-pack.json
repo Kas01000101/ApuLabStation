@@ -1,0 +1,24 @@
+{
+    "level1_hub": {
+        "files": [
+            {
+                "url": "assets/level1/hub/background/fondo_introductorio_apulab.png",
+                "type": "image",
+                "key": "level1_intro_background"
+            },
+            {
+                "url": "assets/level1/hub/background/laboratorio_apulab.png",
+                "type": "image",
+                "key": "level1_lab_background"
+            }
+        ]
+    },
+    "meta": {
+        "app": "Phaser Editor 2D - Asset Pack Editor",
+        "contentType": "phasereditor2d.pack.core.AssetContentType",
+        "url": "https://phasereditor2d.com",
+        "version": 2,
+        "showAllFilesInBlocks": false,
+        "visible": true
+    }
+}

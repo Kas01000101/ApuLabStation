@@ -4,6 +4,8 @@ import { BootScene } from './scenes/BootScene';
 import { MainMenuScene } from './scenes/MainMenuScene';
 import { ParticipantCodeScene } from './scenes/ParticipantCodeScene';
 import { OpportunityIntroScene } from './scenes/OpportunityIntroScene';
+import { Level1RoverHubScene } from './scenes/Level1RoverHubScene';
+import { Mission01VoltageScene } from './scenes/Mission01VoltageScene';
 import { Level2HubbleScene } from './scenes/Level2HubbleScene';
 import { Level1RoverLabScene } from './scenes/Level1RoverLabScene';
 import { Level3ProgrammingScene } from './scenes/Level3ProgrammingScene';
@@ -24,6 +26,8 @@ export const phaserConfig: Phaser.Types.Core.GameConfig = {
     MainMenuScene,
     ParticipantCodeScene,
     OpportunityIntroScene,
+    Level1RoverHubScene,
+    Mission01VoltageScene,
     Level1RoverLabScene,
     Level2HubbleScene,
     Level3ProgrammingScene,

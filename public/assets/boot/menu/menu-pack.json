@@ -2,7 +2,7 @@
     "section1": {
         "files": [
             {
-                "url": "assets/boot/menu/menu_background.png",
+                "url": "assets/boot/menu/fondo_menu_apulab.png",
                 "type": "image",
                 "key": "menu_background"
             },
@@ -15,6 +15,11 @@
                 "url": "assets/boot/menu/apulab_logo.png",
                 "type": "image",
                 "key": "apulab_logo"
+            },
+            {
+                "url": "assets/boot/menu/audio/ui_click.mp3",
+                "type": "audio",
+                "key": "menu_ui_click"
             }
         ]
     },

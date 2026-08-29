@@ -165,8 +165,8 @@ export const uiTokens = {
   },
   sizes: {
     canvas: {
-      width: 1280,
-      height: 720
+      width: 1672,
+      height: 941
     }
   },
   motion: {
@@ -252,6 +252,96 @@ export const uiTokens = {
         border: colors.action.utilityLightBorder,
         shadow: colors.action.utilityLightShadow,
         highlight: colors.action.utilityLightHighlight,
+        text: colors.text.onDark
+      }
+    }
+  },
+  hud: {
+    challenge: {
+      safeArea: {
+        top: 56,
+        right: 72,
+        left: 72
+      },
+      controlHeight: 40,
+      gap: 12,
+      button: {
+        radius: 13,
+        borderWidth: 2,
+        innerBorderWidth: 0,
+        depthOffset: 3,
+        depthPressedOffset: 1,
+        pressedYOffset: 2,
+        hoverYOffset: 0,
+        hoverScale: 1,
+        highlightHeight: 0,
+        fontSize: 14,
+        fontWeight: '600',
+        variants: {
+          yellowPrimary: {
+            bodyTop: '#FFC95C',
+            body: '#F6B93B',
+            bodyBottom: '#F6B93B',
+            hoverBodyTop: '#FFC95C',
+            hoverBody: '#FFC95C',
+            hoverBodyBottom: '#FFC95C',
+            pressedBodyTop: '#F6B93B',
+            pressedBody: '#F6B93B',
+            pressedBodyBottom: '#F6B93B',
+            border: '#D89A28',
+            innerBorder: '#FFE4A3',
+            depth: '#C78320',
+            highlight: '#FFE4A3',
+            glow: '#FFD76A',
+            text: colors.text.onDark,
+            iconMedallion: '#FFC94A',
+            iconMedallionBorder: '#FFFFFF',
+            icon: colors.text.onDark
+          },
+          blueIcon: {
+            bodyTop: '#84E1F2',
+            body: '#5ED3EA',
+            bodyBottom: '#5ED3EA',
+            hoverBodyTop: '#84E1F2',
+            hoverBody: '#84E1F2',
+            hoverBodyBottom: '#84E1F2',
+            pressedBodyTop: '#5ED3EA',
+            pressedBody: '#5ED3EA',
+            pressedBodyBottom: '#5ED3EA',
+            border: '#34AEC6',
+            innerBorder: '#C2F3FC',
+            depth: '#268FA5',
+            highlight: '#C2F3FC',
+            glow: '#8CEBFF',
+            text: colors.text.onDark,
+            iconMedallion: '#32C8EA',
+            iconMedallionBorder: '#FFFFFF',
+            icon: colors.text.onDark
+          }
+        }
+      },
+      explanationButton: {
+        width: 170
+      },
+      iconButton: {
+        size: 40,
+        radius: 12
+      },
+      progress: {
+        width: 56,
+        height: 40,
+        radius: 12,
+        borderWidth: 2,
+        depthOffset: 2,
+        fontSize: 14,
+        fontWeight: '600',
+        bodyTop: '#B19AF2',
+        body: '#9A7EEB',
+        bodyBottom: '#9A7EEB',
+        border: '#7960CD',
+        innerBorder: '#DCD0FF',
+        shadow: '#6950B8',
+        highlight: '#DCD0FF',
         text: colors.text.onDark
       }
     }

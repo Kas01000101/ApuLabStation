@@ -7,6 +7,7 @@ export interface DialoguePanelOptions {
   body: string;
   buttonLabel: string;
   onClose: () => void;
+  onButtonPress?: () => void;
 }
 
 export class DialoguePanel extends Phaser.GameObjects.Container {
@@ -47,6 +48,8 @@ export class DialoguePanel extends Phaser.GameObjects.Container {
       height: 60,
       label: options.buttonLabel,
       variant: 'primary',
+      clickSound: false,
+      onPress: options.onButtonPress,
       onClick: () => {
         options.onClose();
         this.destroy();

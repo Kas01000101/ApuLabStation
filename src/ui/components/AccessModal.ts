@@ -5,6 +5,7 @@ export interface AccessModalOptions {
   onStudySubmit: (code: string, credential: string) => Promise<boolean>;
   onDemoSubmit: () => Promise<boolean>;
   onClose: () => void;
+  onButtonPress?: () => void;
 }
 
 export class AccessModal {
@@ -47,6 +48,9 @@ export class AccessModal {
     this.closeButton?.addEventListener('click', () => this.close(), { signal });
     this.submitButton?.addEventListener('click', () => this.submitStudy(), { signal });
     this.demoButton?.addEventListener('click', () => this.submitDemo(), { signal });
+    this.closeButton?.addEventListener('pointerdown', () => this.options.onButtonPress?.(), { signal });
+    this.submitButton?.addEventListener('pointerdown', () => this.options.onButtonPress?.(), { signal });
+    this.demoButton?.addEventListener('pointerdown', () => this.options.onButtonPress?.(), { signal });
 
     this.codeInput?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') this.credentialInput?.focus();

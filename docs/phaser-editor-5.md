@@ -87,7 +87,7 @@ icon_settings
 icon_credits
 ```
 
-Do not bake button labels into PNGs. Labels such as `INICIAR MISIÓN`, `CONTINUAR`, `AJUSTES`, and `CRÉDITOS` should remain Phaser Text or BitmapText so `MainMenuScene.ts` can keep deciding visibility and behavior.
+Do not bake button labels into PNGs. Labels such as `INICIAR MISIÓN`, `AJUSTES`, and `CRÉDITOS` should remain Phaser Text or BitmapText so `MainMenuScene.ts` can keep deciding behavior.
 
 Create the visual menu layout from Phaser Editor 5, not by hand:
 
@@ -99,4 +99,6 @@ Create the visual menu layout from Phaser Editor 5, not by hand:
 6. Set the scene display size to `1280 x 720`.
 7. Add images by first placing PNGs under `public/assets/boot/menu/`, then registering them in `menu-pack.json`.
 
-`MainMenuLayout.scene` should be composition only. Keep navigation, `CONTINUAR` visibility, and session decisions in `MainMenuScene.ts` and `GameState`.
+`MainMenuLayout.scene` should be composition only. Keep navigation and session decisions in `MainMenuScene.ts` and `GameState`.
+
+Game progress is runtime-only and is not restored after page reload or browser/tab closure. ApuLab Station does not expose a `CONTINUAR` button or any resume flow.

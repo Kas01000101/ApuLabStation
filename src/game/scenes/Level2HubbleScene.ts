@@ -4,6 +4,7 @@ import { GraphChallengeEngine } from '../../engines/GraphChallengeEngine';
 import { TelemetryService } from '../../systems/TelemetryService';
 import { GameState } from '../../systems/GameState';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 import { clearApuLabDom } from '../../ui/domComponents';
 
 export class Level2HubbleScene extends Phaser.Scene {
@@ -155,6 +156,7 @@ export class Level2HubbleScene extends Phaser.Scene {
       container.setInteractive({ useHandCursor: true });
 
       container.on('pointerdown', () => {
+        playUiClick(this);
         const res = this.engine.selectNode(n.id);
         TelemetryService.getInstance().recordEvent({
           sceneId: 'Level2HubbleScene',
@@ -239,6 +241,7 @@ export class Level2HubbleScene extends Phaser.Scene {
     resetBtn.innerText = '🔄 REINICIAR RUTA';
 
     testBtn.onclick = () => {
+      playUiClick(this);
       const res = this.engine.testRoute();
       const durationSeconds = Math.round((Date.now() - this.challengeStartTime) / 1000);
 
@@ -301,6 +304,7 @@ export class Level2HubbleScene extends Phaser.Scene {
     };
 
     hintBtn.onclick = () => {
+      playUiClick(this);
       const hintMsg = this.engine.requestHint();
       TelemetryService.getInstance().recordEvent({
         sceneId: 'Level2HubbleScene',
@@ -312,6 +316,7 @@ export class Level2HubbleScene extends Phaser.Scene {
     };
 
     resetBtn.onclick = () => {
+      playUiClick(this);
       this.engine.resetPath();
       if (this.feedbackText) this.feedbackText.setText('Ruta reiniciada en el Punto A.');
       this.updateUI();

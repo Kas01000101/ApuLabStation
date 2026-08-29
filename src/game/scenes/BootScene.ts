@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { GAME_HEIGHT, GAME_WIDTH } from '../constants';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -16,6 +17,7 @@ export class BootScene extends Phaser.Scene {
 
     this.load.pack('menu', 'assets/boot/menu/menu-pack.json');
     this.load.pack('intro', 'assets/boot/intro/intro-pack.json');
+    this.load.pack('level1_hub', 'assets/level1/hub/level1-hub-pack.json');
   }
 
   create() {
@@ -25,20 +27,22 @@ export class BootScene extends Phaser.Scene {
 
   private generateProceduralTextures(): void {
     // 1. Starry Space Background Texture
-    const bgCanvas = this.textures.createCanvas('space_bg', 1280, 720);
+    const bgCanvas = this.textures.createCanvas('space_bg', GAME_WIDTH, GAME_HEIGHT);
     if (bgCanvas) {
       const ctx = bgCanvas.getContext();
-      const grad = ctx.createRadialGradient(640, 360, 50, 640, 360, 800);
+      const centerX = GAME_WIDTH / 2;
+      const centerY = GAME_HEIGHT / 2;
+      const grad = ctx.createRadialGradient(centerX, centerY, 50, centerX, centerY, Math.max(GAME_WIDTH, GAME_HEIGHT) * 0.62);
       grad.addColorStop(0, '#1A224D');
       grad.addColorStop(0.5, '#141938');
       grad.addColorStop(1, '#0B0E26');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 1280, 720);
+      ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
       // Draw distant stars
       for (let i = 0; i < 180; i++) {
-        const x = Math.random() * 1280;
-        const y = Math.random() * 720;
+        const x = Math.random() * GAME_WIDTH;
+        const y = Math.random() * GAME_HEIGHT;
         const r = Math.random() * 2 + 0.5;
         const alpha = Math.random() * 0.8 + 0.2;
         ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
@@ -49,8 +53,8 @@ export class BootScene extends Phaser.Scene {
 
       // Draw faint purple nebula dust
       for (let i = 0; i < 4; i++) {
-        const nx = Math.random() * 1280;
-        const ny = Math.random() * 720;
+        const nx = Math.random() * GAME_WIDTH;
+        const ny = Math.random() * GAME_HEIGHT;
         const nr = Math.random() * 250 + 150;
         const nGrad = ctx.createRadialGradient(nx, ny, 10, nx, ny, nr);
         nGrad.addColorStop(0, 'rgba(77, 66, 136, 0.15)');

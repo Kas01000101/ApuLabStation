@@ -4,6 +4,7 @@ import { TelemetryService } from '../../systems/TelemetryService';
 import { ExportService } from '../../systems/ExportService';
 import { getResearchRepository } from '../../systems/research/ResearchRepositoryProvider';
 import { PlaceholderArt } from '../../ui/PlaceholderArt';
+import { playUiClick } from '../../ui/audio/playUiClick';
 import { clearApuLabDom } from '../../ui/domComponents';
 
 export class FinalScene extends Phaser.Scene {
@@ -93,6 +94,7 @@ export class FinalScene extends Phaser.Scene {
     const jsonBtn = document.getElementById('export-json-btn');
     if (jsonBtn) {
       jsonBtn.onclick = () => {
+        playUiClick(this);
         TelemetryService.getInstance().recordEvent({
           sceneId: 'FinalScene',
           eventType: 'export_json_clicked'
@@ -104,6 +106,7 @@ export class FinalScene extends Phaser.Scene {
     const csvBtn = document.getElementById('export-csv-btn');
     if (csvBtn) {
       csvBtn.onclick = () => {
+        playUiClick(this);
         TelemetryService.getInstance().recordEvent({
           sceneId: 'FinalScene',
           eventType: 'export_csv_clicked'
@@ -115,6 +118,7 @@ export class FinalScene extends Phaser.Scene {
     const restartBtn = document.getElementById('restart-game-btn');
     if (restartBtn) {
       restartBtn.onclick = () => {
+        playUiClick(this);
         overlay.remove();
         window.location.reload();
       };

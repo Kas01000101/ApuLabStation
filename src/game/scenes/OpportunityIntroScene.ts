@@ -26,7 +26,7 @@ type DialogAnimatable =
   | Phaser.GameObjects.Text
   | Phaser.GameObjects.Container;
 
-const NEXT_SCENE_KEY = 'Level1RoverLabScene';
+const NEXT_SCENE_KEY = 'Level1RoverHubScene';
 const FADE_OUT_MS = 130;
 const FADE_IN_MS = 210;
 const NUNITO_FONT_FACE = '"Nunito Sans"';

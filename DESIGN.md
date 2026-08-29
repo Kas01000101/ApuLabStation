@@ -137,6 +137,71 @@ Estados:
 - Pressed: escala `0.97`, `y + 2 px`, extrusion menor.
 - Pointer out: regresar exactamente a normal.
 
+## Challenge HUD
+
+HUD superior para challenges dentro de misiones, como `MISSION 01 · VOLTAJE`.
+
+Debe sentirse como UI de videojuego educativo pulido, no como dashboard web. Usar controles solidos, claros, con volumen amable, borde grueso y sombra inferior. Evitar paneles negros transparentes, neon como estructura principal, outlines finos y botones minimos.
+
+Top left:
+
+- Titulo compacto, por ejemplo `VOLTAJE`.
+- Instruccion secundaria debajo, por ejemplo `Conecta las puntas para medir el voltaje`.
+- No encerrar la instruccion en una card grande.
+
+Top right:
+
+- Orden exacto: `VER EXPLICACION`, boton de libro, badge de progreso.
+- Los tres elementos comparten altura, baseline, radio y espaciado visual.
+- Safe area aproximada en canvas `1672x941`: top `56px`, right `72px`, left `72px`.
+- Gap recomendado: `20px`.
+
+Game HUD Button:
+
+- Construccion por capas visibles: `BottomDepth`, `OuterBorder`, `MainBody`, `TopHighlight`, `Content`.
+- El boton no debe parecer una pill web ni depender de glassmorphism.
+- Variante principal amarilla para `VER EXPLICACION`.
+- Width para explicacion `264px`.
+- Height de cuerpo `60px`.
+- Depth inferior `7px`.
+- Radius `18px`.
+- Fondo solido amarillo/oro con variacion vertical sutil: top `#FFD84D`, body `#FFC928`, bottom `#F2A900`.
+- Borde externo marron/dorado oscuro `#7A4B00` de `4px`.
+- Profundidad inferior `#A96600`.
+- Highlight superior `#FFF3A6`.
+- Medallon circular naranja/dorado `34px` con icono play blanco.
+- Texto Poppins Bold, `20px`, marron oscuro `#4A2E00`.
+
+Boton icon-only:
+
+- Size `62x62px` mas depth inferior.
+- Reutiliza exactamente la construccion fisica del boton de explicacion.
+- Variante secundaria violeta: top `#8E7CFF`, body `#705CF6`, bottom `#5943D7`, border `#31238A`, depth `#3929A3`.
+- Iconografia por `Phaser.Graphics`, redondeada y gruesa.
+- No usar emoji.
+
+Progress badge:
+
+- No es interactivo y no debe tener cursor ni estados hover/pressed.
+- Width `88px`.
+- Height `60px`.
+- Fondo cyan informativo: top `#72E7F2`, body `#45D7E8`, bottom `#20B4C8`.
+- Borde `#126879`, depth menor `4px`.
+- Texto Poppins Bold `24px`, `#073D48`, formato dinamico `current / total`.
+
+Estados interactivos:
+
+- Normal: elevado.
+- Hover: escala maxima `1.015`, mover la cara como maximo `-1px`, cuerpo levemente mas brillante.
+- Pressed: mover solo la cara del boton `5px` hacia abajo y reducir la profundidad visible.
+- Duracion: `120ms`, easing `Sine.easeOut`.
+
+Implementacion:
+
+- Usar `src/ui/tokens.ts` como fuente de medidas y colores.
+- Usar componentes Phaser reutilizables para no duplicar construccion por capas.
+- No instalar librerias UI para esta familia de controles.
+
 ## Access Modal
 
 Modal oficial para `INICIAR MISION` desde el Main Menu.

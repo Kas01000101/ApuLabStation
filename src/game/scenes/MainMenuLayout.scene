@@ -2,8 +2,8 @@
     "id": "2d301a7f-b2a3-46c3-8f04-8f5324511597",
     "sceneType": "SCENE",
     "settings": {
-        "snapWidth": 1280,
-        "snapHeight": 720,
+        "snapWidth": 1672,
+        "snapHeight": 941,
         "preloadPackFiles": [],
         "createMethodName": "editorCreate",
         "sceneKey": "MainMenuLayout"
@@ -16,10 +16,10 @@
             "texture": {
                 "key": "menu_background"
             },
-            "x": 635,
-            "y": 360,
-            "scaleX": 0.8567675815939715,
-            "scaleY": 0.8607886923031886
+            "x": 910,
+            "y": 355,
+            "scaleX": 1.2353018166619714,
+            "scaleY": 1.2585167201281886
         },
         {
             "type": "Image",
@@ -31,7 +31,8 @@
             "x": 128,
             "y": 514,
             "scaleX": 0.32367022000844076,
-            "scaleY": 0.3344717508884089
+            "scaleY": 0.3344717508884089,
+            "visible": false
         },
         {
             "type": "Image",
@@ -40,10 +41,10 @@
             "texture": {
                 "key": "apulab_logo"
             },
-            "x": 668,
-            "y": 127,
-            "scaleX": 0.3315021662386533,
-            "scaleY": 0.3209696430208045,
+            "x": 852,
+            "y": 141,
+            "scaleX": 0.38367471059620356,
+            "scaleY": 0.34243357245560135,
             "originX": 0.5635063677026548,
             "originY": 0.4810183274524026
         }

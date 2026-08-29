@@ -5,9 +5,10 @@ Este mapa resume el estado funcional de escenas y sus dependencias futuras. Las 
 | Scene | Status | Current Data | Future Dependencies |
 | --- | --- | --- | --- |
 | `BootScene` | ACTIVE | Asset packs / preload | none |
-| `MainMenuScene` | ACTIVE | `GameState.hasRecoverableSession()` | PRODUCTION-DEPLOY |
+| `MainMenuScene` | ACTIVE | Runtime-only `GameState`; no resume flow | PRODUCTION-DEPLOY |
 | `ParticipantCodeScene` | ACTIVE | `ResearchRepository`, `MockResearchRepository` for DEMO | RESEARCH-BACKEND, AUTH-REAL, STUDY-CREDENTIALS |
 | `OpportunityIntroScene` | ACTIVE | `TelemetryService` | none |
+| `Level1RoverHubScene` | ACTIVE / mission navigation hub | `GameState`, `TelemetryService` | Three.js characters / KAWSAY-1 / Hopper |
 | `Level1RoverLabScene` | ACTIVE / PLACEHOLDER GAMEPLAY | `TelemetryService`, `LocalQueueService` through sync | OFFLINE-SYNC |
 | `Level2HubbleScene` | ACTIVE / PLACEHOLDER GAMEPLAY | `TelemetryService`, `LocalQueueService` through sync | OFFLINE-SYNC |
 | `Level3ProgrammingScene` | ACTIVE / PLACEHOLDER GAMEPLAY | `TelemetryService`, `LocalQueueService` through sync | OFFLINE-SYNC |
@@ -16,3 +17,5 @@ Este mapa resume el estado funcional de escenas y sus dependencias futuras. Las 
 | `PretestScene` | LEGACY / NOT OFFICIAL FLOW | `TelemetryService` | PRE-MAPPING only if PRE ever returns in-game |
 
 Future dependencies must use IDs from `docs/FUTURE_IMPLEMENTATION.md` and `src/config/futureImplementation.ts`.
+
+Game progress is runtime-only and is not restored after page reload or browser/tab closure. New executions start at `MainMenuScene` and require `INICIAR MISIÓN`.

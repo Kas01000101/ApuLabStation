@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { playUiClick } from '../audio/playUiClick';
 import { uiTokens } from '../tokens';
 
 export type ApuButtonVariant = 'primary' | 'secondary' | 'utilityDark' | 'utilityLight';
@@ -9,6 +10,9 @@ export interface ApuButtonOptions {
   label: string;
   variant?: ApuButtonVariant;
   onClick: () => void;
+  onHover?: () => void;
+  onPress?: () => void;
+  clickSound?: boolean;
   width?: number;
   height?: number;
 }
@@ -36,6 +40,9 @@ export class ApuButton extends Phaser.GameObjects.Container {
       variant: 'primary',
       width: uiTokens.button.width,
       height: uiTokens.button.height,
+      onHover: () => undefined,
+      onPress: () => undefined,
+      clickSound: true,
       ...options
     };
 
@@ -72,6 +79,7 @@ export class ApuButton extends Phaser.GameObjects.Container {
   private bindPointerStates(): void {
     this.hitArea.on('pointerover', () => {
       this.isPointerOver = true;
+      this.options.onHover();
       this.renderState('hover');
       this.animateTo(uiTokens.motion.scale.menuHover, 0);
     });
@@ -83,6 +91,10 @@ export class ApuButton extends Phaser.GameObjects.Container {
     });
 
     this.hitArea.on('pointerdown', () => {
+      if (this.options.clickSound) {
+        playUiClick(this.scene);
+      }
+      this.options.onPress();
       this.renderState('pressed');
       this.animateTo(uiTokens.motion.scale.pressed, uiTokens.button.pressedYOffset);
     });
