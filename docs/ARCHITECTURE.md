@@ -1,22 +1,22 @@
 # ApuLab Station Architecture
 
-Este documento resume la arquitectura vigente para que nuevos agentes no conecten integraciones futuras directamente dentro de escenas.
+This document summarizes the current architecture so future agents and contributors do not connect external integrations directly inside gameplay scenes.
 
 ## Runtime
 
-ApuLab usa Phaser 4.2.1, TypeScript y Vite. Las escenas viven en `src/game/scenes/`. Phaser Editor 5 puede editar layouts visuales, mientras la logica funcional permanece en TypeScript.
+ApuLab uses Phaser 4.2.1, TypeScript, and Vite. Scenes live in `src/game/scenes/`. Phaser Editor 5 may be used to edit visual layouts, while functional logic remains in TypeScript.
 
-## Scene Responsibilities
+## Scene responsibilities
 
-Las escenas controlan presentacion, interaccion y navegacion. No deben llamar Supabase, SQL, SDKs de base de datos ni `fetch` directo para persistencia de investigacion.
+Scenes control presentation, interaction, and navigation. They must not call Supabase, SQL, database SDKs, or direct persistence-oriented `fetch` requests for research data.
 
-## Visual 3D Layer
+## Visual 3D layer
 
-Phaser sigue siendo el motor principal de gameplay, UI, navegacion y telemetria. Three.js se usa solo como capa visual superpuesta para assets 3D low-poly en escenas que lo necesiten, empezando por `Level1RoverHubScene`.
+Phaser remains the primary engine for gameplay, UI, navigation, and telemetry. Three.js is used only as an overlaid visual layer for low-poly 3D assets in scenes that require it, beginning with `Level1RoverHubScene`.
 
-`src/game/three/ThreeOverlay.ts` crea un canvas WebGL transparente dentro de `#game-container`, con `pointer-events: none`, resize propio y cleanup completo al cerrar la escena. Los modelos GLB del Hub Level 1 se cargan directamente desde `public/assets/level1/shared/models/` mediante `GLTFLoader`; no forman parte del Asset Pack de Phaser.
+`src/game/three/ThreeOverlay.ts` creates a transparent WebGL canvas inside `#game-container`, with `pointer-events: none`, its own resize handling, and complete cleanup when the scene closes. GLB models used by the Level 1 Hub are loaded directly from `public/assets/level1/shared/models/` through `GLTFLoader`; they are not part of the Phaser Asset Pack.
 
-## Data Flow
+## Data flow
 
 ```mermaid
 flowchart TD
@@ -29,25 +29,31 @@ flowchart TD
   Repository --> Supabase["SupabaseResearchRepository"]
 ```
 
-`VITE_DATA_MODE=mock` es el modo por defecto de desarrollo. `VITE_DATA_MODE=supabase` solo debe usarse cuando Supabase Research este configurado y validado.
+`VITE_DATA_MODE=mock` is the default development mode. `VITE_DATA_MODE=supabase` should only be used when the Supabase research environment is configured and validated.
 
-Game progress is runtime-only and is not restored after page reload or browser/tab closure. `GameState` keeps playable session data in memory for scene-to-scene navigation during the current execution only. Telemetry queues and research/mock repository storage are separate data flows and may continue using local or backend persistence.
+Game progress is runtime-only and is not restored after a page reload or browser/tab closure. `GameState` keeps playable-session data in memory for scene-to-scene navigation during the current execution only. Telemetry queues and research/mock repository storage are separate data flows and may continue using local or backend persistence.
 
-## Research Repository
+## Research repository
 
-`ResearchRepository` es el contrato estable para autenticacion, sesiones, eventos, POST, finalizacion y checkpoints. Las implementaciones actuales son:
+`ResearchRepository` is the stable contract for authentication, sessions, events, post-test data, completion, and checkpoints.
 
-- `MockResearchRepository`: desarrollo local, DEMO, Phaser Editor.
-- `SupabaseResearchRepository`: adaptador previsto para investigacion real mediante Edge Functions.
+Current implementations:
 
-## Research vs Impact
+- `MockResearchRepository`: local development, demo mode, and Phaser Editor.
+- `SupabaseResearchRepository`: adapter intended for real research persistence through Edge Functions.
 
-Research contiene datos de estudio y no debe alimentar dashboards publicos directamente. Impact sera una capa futura de metricas anonimas/agregadas.
+## Research vs. impact
 
-## Master Documents
+The research layer contains study data and must not feed public dashboards directly. A future impact layer may expose only anonymous and aggregated metrics.
 
-- `DESIGN.md`: direccion visual.
-- `docs/ARCHITECTURE.md`: arquitectura tecnica.
-- `docs/SCENE_MAP.md`: escenas y dependencias.
-- `docs/DATA_GOVERNANCE.md`: proteccion y manejo de datos.
-- `docs/FUTURE_IMPLEMENTATION.md`: integraciones aplazadas.
+## Master documents
+
+- `README.md`: public project overview.
+- `DESIGN.md`: visual direction.
+- `docs/ARCHITECTURE.md`: technical architecture.
+- `docs/SCENE_MAP.md`: scenes and dependencies.
+- `docs/DATA_GOVERNANCE.md`: research-data protection and handling.
+- `docs/DATA_DICTIONARY.md`: canonical field definitions.
+- `docs/EVENT_CATALOG.md`: allowed telemetry events.
+- `docs/DATA_TEST_PLAN.md`: research-data validation.
+- `docs/FUTURE_IMPLEMENTATION.md`: deferred integrations.
